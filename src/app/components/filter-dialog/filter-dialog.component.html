@@ -1,0 +1,49 @@
+<div class="p-3">
+    <h2 class="py-2 px-1">Filter</h2>
+    <form class="row" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="country" (selectionChange)="selectCountry($event)"  placeholder="Country">
+                @for (item of countries; track $index) {
+                    <mat-option [value]="item.id"> {{item.name}} </mat-option>
+                }
+            </mat-select>
+            <mat-error *ngIf="filterForm.get('country')?.hasError('required')">
+                country is required.
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="state" (selectionChange)="selectState($event)"  placeholder="States">
+                @for (item of states; track $index) {
+                <mat-option [value]='item.id'>{{item.name}}</mat-option>
+                }
+            </mat-select>
+            <mat-error *ngIf="filterForm.get('state')?.hasError('required')">
+                State is required.
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-select [formControl]="cityCtrl" placeholder="City">
+                @for (item of cities; track $index) {
+                <mat-option [value]='item.id'>{{item.name}}</mat-option>
+                }
+            </mat-select>
+            <mat-error *ngIf="filterForm.get('state')?.hasError('required')">
+                city is required.
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="text" formControlName="pincode" placeholder="Enter pincode" maxlength="6" minlength="6">
+            <mat-error *ngIf="filterForm.get('pincode')?.hasError('maxlength') || filterForm.get('pincode')?.hasError('pattern')">
+                Invalid Pincode
+            </mat-error>
+        </mat-form-field>
+        <div class="d-flex w-100 justify-content-between">
+            <div></div>
+            <div class="d-flex gap-2">
+                <button type="button" (click)="closeDialog()" class="btn btn-outline-secondary">Cancel</button>
+                <button type="button" (click)="resetFilters()" class="btn custom-outline-btn">Reset</button>
+                <button type="button" type="submit" class="btn btn-primary bg" [disabled]="!isFormValid">Apply</button>
+            </div>
+        </div>
+    </form>
+</div>

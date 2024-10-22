@@ -1,0 +1,168 @@
+<ngx-ui-loader></ngx-ui-loader>
+<section class="vh-100">
+    <div class="container py-2">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-md-12 col-xl-8">
+                <div class="card overflow-hidden" style="border-radius: 15px;">
+                    <button class="position-absolute back-button bg-transparent border-0" (click)="goBack()"><i
+                        class="fa-solid fa-arrow-left text-white fw-bold fs-4"></i></button>
+                    <div class="w-100 header"></div>
+                    @if (userData) {
+                        <div
+                        class="card-body positioned-div text-center d-flex flex-column justify-content-center align-items-center">
+                        <div class="mt-3 mb-4 dim rounded-circle profile-border bg-white primary-shadow">
+                            <img [src]="userData.profile_pic ? userData.profile_pic : 'assets/sampleImages/profile3.jpg'" class="img-fluid" />
+                        </div>
+                        <h4 class="mb-2 fw-bold fs-3 primary-font"> {{userData.name | slice:0:15}}{{userData.name.length > 15 ? "...." : ""}}</h4>
+                        <div class="row py-3 w-100" style="max-width: 300px;">
+                            <div class="col-4 p-0">
+                                <button type="button" data-mdb-button-init data-mdb-ripple-init (click)="callPerson()"
+                                    class="btn btn-outline-secondary btn-floating rounded-circle">
+                                    <i class="bi bi-telephone-fill primary-font"></i>
+                                </button>
+                                <p class="mt-2">Call</p>
+                            </div>
+                            <div class="col-4 p-0">
+                                <button type="button" data-mdb-button-init data-mdb-ripple-init (click)="openUpdateForm($event)"
+                                    class="btn btn-outline-secondary btn-floating rounded-circle">
+                                    <i class="bi bi-pencil-fill primary-font"></i>
+                                </button>
+                                <p class="mt-2">Edit</p>
+                            </div>
+                            <div class="col-4 p-0">
+                                <button type="button" data-mdb-button-init data-mdb-ripple-init (click)="openWhatsApp()"
+                                    class="btn btn-outline-secondary btn-floating rounded-circle">
+                                    <i class="bi bi-whatsapp"></i>
+                                </button>
+                                <p class="mt-2">What's App</p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <!-- Personal Details -->
+                                <div class="col-md-12 mb-4">
+                                    <div>
+                                        <div class="py-4 text-start">
+                                            <h5 class="mb-0 fs-4 primary-font"><strong>Personal Details</strong>
+                                            </h5>
+                                        </div>
+                                        <div class="text-start">
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Membership ID:</p>
+                                                <p class="w-50"> {{userData.mem_no ? userData.mem_no : "-"}} </p>
+                                            </div>
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Associate Year:</p>
+                                                <p> {{userData.ass_year ? userData.ass_year : "-" }}</p>
+                                            </div>
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Name:</p>
+                                                <p class="w-50">{{ userData.name ? userData.name : "-"}}</p>
+                                            </div>
+                                            <!-- <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">DOB:</p>
+                                                <p> {{ userData.name ? userData.name : "-"}} </p>
+                                            </div> -->
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Email:</p>
+                                                <p class="w-50"> {{ userData.email ? userData.email : "-"}}</p>
+                                            </div>
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Phone No.:</p>
+                                                <p> {{ userData.mobile_no ? userData.mobile_no : "-"}}</p>
+                                            </div>
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Whatsapp:</p>
+                                                <p> {{ userData.mobile_no ? userData.mobile_no : "-"}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Address Details -->
+                                <div class="col-md-12 mb-4">
+                                    <div>
+                                        <div class="py-4 text-start">
+                                            <h5 class="mb-0 fs-4 primary-font"><strong>Address Details</strong></h5>
+                                        </div>
+                                        <div class="text-start">
+                                            <p class="fs-6">{{getSAddress()}}</p>
+                                        </div>
+                                        <div class="text-start fs-6">
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Country:</p>
+                                                <p>{{userData.country}}</p>
+                                            </div>
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">State:</p>
+                                                <p>{{userData.state}}</p>
+                                            </div>
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">City:</p>
+                                                <p> {{userData.city}} </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Professional Details -->
+                                <div class="col-md-12">
+                                    <div>
+                                        <div class="py-4 text-start">
+                                            <h5 class="mb-0 fs-4 primary-font"><strong>Professional Details</strong>
+                                            </h5>
+                                        </div>
+                                        <div class="text-start fs-6">
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Company:</p>
+                                                <p>{{userData.company_name}}</p>
+                                            </div>
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Designation:</p>
+                                                <p>{{userData.designation}}</p>
+                                            </div>
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Choose:</p>
+                                                <p> {{userData.job_type}} </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    @if (userData &&  userData.feedbacks.length > 0) {
+                                        <div>
+                                            <div class="py-4 text-start">
+                                                <h5 class="mb-0 fs-4 primary-font"><strong>Additional Details</strong></h5>
+                                            </div>
+                                            <div class="text-start fs-6">
+                                                <div class="fs-6">
+                                                    <p class="primary-font fw-medium m-0 mb-1">Remark 1 : </p>
+                                                    <p> {{userData.feedbacks[0].remark1 ? userData.feedbacks[0].remark1 : "-"}} </p>
+                                                </div>
+                                                <div class="fs-6">
+                                                    <p class="primary-font fw-medium m-0 mb-1">Remark 2:</p>
+                                                    <p>
+                                                        {{userData.feedbacks[0].remark2 ? userData.feedbacks[0].remark2 : "-"}}
+                                                    </p>
+                                                </div>
+                                                <div class="fs-6">
+                                                    <p class="primary-font fw-medium m-0 mb-1">Ratings:</p>
+                                                    <p> {{userData.feedbacks[0].rating ? userData.feedbacks[0].rating : "-"}}</p>
+                                                </div>
+                                                <div class="fs-6">
+                                                    <p class="primary-font fw-medium m-0 mb-1">Reference:</p>
+                                                    <p> {{userData.feedbacks[0].reference_by ? userData.feedbacks[0].reference_by : "-"}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

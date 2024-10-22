@@ -1,0 +1,47 @@
+<ngx-ui-loader></ngx-ui-loader>
+<div>
+    <div class="search-header p-4 d-flex justify-content-center align-items-center gap-3 sticky-top">
+        <div class="search-bar-container d-flex justify-content-between align-item-center">
+            <input matInput [formControl]="searchString" placeholder="Search by Address." class="fs-4 special-font border-0 p-1" type="text">    
+            <mat-icon>search</mat-icon>
+        </div>
+        <div>
+            <button class="bg-none bg-transparent outline-0 border-0" (click)="logOut()"><i class="bi bi-box-arrow-right text-white fs-1"></i></button>
+        </div>
+    </div>
+    <app-filter></app-filter>
+    <div class="d-flex justify-content-center align-item-center">
+        @if (this.isLoaded && chartedAccountant.length == 0) {
+        <div style="height: 60vh;" class="d-flex justify-content-center align-items-center flex-column">
+            <img src="./assets/sampleImages/notfound.png" [width]="100" alt="">
+            <h2 class="p-2">No Result found</h2>
+        </div>
+        }
+        @else {
+        <div class="row container d-flex justify-content-center align-item-center gap-2 mt-2">
+            @for (item of chartedAccountant; track $index) {
+            <mat-card (click)="openUserProfile(item)"
+                class="example-card rounded-4 mt-2 p-3 gap-2 d-flex justify-content-between flex-row overflow-hidden" appearance="outlined">
+                <div class="rounded-4 card-image">
+                    <!-- <img class="img-fluid w-100 h-100" mat-card-lg-image src="/assets/sampleImages/profile3.jpg "> -->
+                    <img class="img-fluid w-100 h-100" mat-card-lg-image [src]="item.profile_pic ? item.profile_pic : '/assets/sampleImages/profile3.jpg'">
+                </div>
+                <div class="p-1 ps-2">
+                    <p class="fs-6 fw-bold my-2 mt-1 p-0">{{item.name | slice:0:15}}{{item.name.length > 45 ? "...." : ""}}</p>
+                    <p class="fs-6 fw-medium my-1">Ass. Year - A2003</p>
+                    <div class="py-2">
+                        <p style="word-break: break-word;">{{getSAddress(item) | slice:0:45}}{{getSAddress(item).length > 45 ?
+                            "...." : ""}}</p>
+                    </div>
+                    <p class="fs-6 fw-medium">{{item.mobile_no}}</p>
+                </div>
+                <button (click)="userUpdate($event, item)"
+                    class="position-absolute edit-user bg-transparent border-0 d-flex justify-content-center align-items-center rounded-circle"><i class="fa-solid fa-pen-to-square fs-4 primary-font"></i></button>
+            </mat-card>
+            }
+        </div>
+        }
+        
+    </div>
+    <mat-paginator #paginator class="paginator p-1 text-white w-100 {{chartedAccountant.length == 0 ? 'fixed' : ''}}" [length]="totalItemsCount" [pageSize]="10"  aria-label="Select page" (page)="onPageChange($event)"></mat-paginator>
+</div>

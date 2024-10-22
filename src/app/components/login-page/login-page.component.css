@@ -1,0 +1,26 @@
+.background{ background-color: var(--primary-color);}
+.heading-color { color: #86efac; }
+.custom-card { border-radius: 1.2rem; }
+.image-div {border-radius: 16px; overflow: hidden; }
+.login-button{ border-radius: 1rem;}
+::ng-deep .custom-outline .mat-form-field-outline {
+    border-radius: 20px;
+}
+.forget-password{color: #033d62; font-size: 1rem; text-decoration: none;}
+:host ::ng-deep .mdc-text-field--outlined {
+    --mdc-outlined-text-field-container-shape: 19px;
+}
+.disable:disabled{background-color: #2074a8;border: none;}
+@media (max-height: 700px) {
+    .small-height {
+        justify-content: center;
+    }
+    .bg-div{
+       margin: 0 !important;
+    }
+    .logo-header{
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+}
+  

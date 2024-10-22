@@ -1,0 +1,40 @@
+.search-header{
+    background-color: var(--primary-color);
+    z-index: 3;
+}
+.rounded-border{
+    border-radius: 20px;
+}
+.search-bar-container{
+    padding: 12px;
+    width: 90%;
+    background-color: rgb(253, 253, 253);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    max-width: 350px;
+}
+.search-bar-container input{
+    outline: none;
+    background: inherit;
+    max-width: 350px;
+}
+.fixed{position: fixed !important; bottom: 0 !important;}
+.example-card {
+    max-width: 410px;
+    min-height: 190px;
+    min-width: 360px;
+    width: 98%;
+    margin-bottom: 8px;
+    border: 1px solid rgb(186, 186, 186);
+}
+.card-image{height: 100%; max-width: 150px; max-height: 180px; overflow: hidden; width: 55%;min-width: 130px;
+}   
+.paginator{position: sticky; bottom: 0;background-color: var(--primary-color);}
+.edit-user{right: 2px; bottom: 10px; width: 35px;}
+:host ::ng-deep .mat-mdc-paginator-icon{
+    fill: rgb(0, 187, 255);
+}
+:host ::ng-deep .mat-mdc-icon-button[disabled] .mat-mdc-paginator-icon {
+    fill: rgba(0, 238, 255, 0.307);
+}

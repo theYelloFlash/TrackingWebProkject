@@ -1,0 +1,5 @@
+.header {background-color: var(--primary-color);height: 130px;}
+.positioned-div{position: relative; top : -90px}
+.dim { height: 130px; width: 130px; overflow: hidden;}
+.profile-border{ border : 4px solid white;}
+.back-button{ top: 23px;left: 16px; }
