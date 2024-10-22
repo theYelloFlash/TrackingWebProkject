@@ -24,8 +24,8 @@ export class CommonService {
         this.headers = new HttpHeaders().set('Authorization', `Bearer ${this.access_token}`);
     }
 
-    getAllUsers(currentPage : number): Observable<ApiPaginatedResponse<CharteredAccountant>>{
-        return this.http.get<ApiPaginatedResponse<CharteredAccountant>>(`${this.environment}chartered-accountants?page=${currentPage}`,{headers : this.headers});
+    getAllUsers(currentPage : number, searchString : string): Observable<ApiPaginatedResponse<CharteredAccountant>>{
+        return this.http.get<ApiPaginatedResponse<CharteredAccountant>>(`${this.environment}chartered-accountants?search_query=${searchString}&page=${currentPage}`,{headers : this.headers});
     }
 
     login(creadentials : LoginCredentials) : Observable<Tokens>{

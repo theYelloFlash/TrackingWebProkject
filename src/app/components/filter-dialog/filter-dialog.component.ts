@@ -12,6 +12,8 @@ import { FilterDataService, IFilterData } from '../../services/filter-data-servi
 import { ApiPaginatedResponse, CharteredAccountant } from '../../Interface/apiResponse';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ToastrService } from 'ngx-toastr';
+import { ResolveData } from '@angular/router';
+import { resetFormServ } from '../../services/resetDataService';
 
 
 @Component({
@@ -41,7 +43,8 @@ export class FilterDialogComponent {
   constructor(private fb : FormBuilder, private matDialogref : MatDialogRef<FilterDialogComponent>,
     private commonServ : CommonService, private filterDataService : FilterDataService,
     private loader : NgxUiLoaderService,
-    private toastr : ToastrService
+    private toastr : ToastrService,
+    private resetFormServ : resetFormServ
   ){}
 
   ngOnInit(): void {
@@ -131,7 +134,6 @@ export class FilterDialogComponent {
   }
 
   onSubmit(){
-    console.log("inside submit")
     localStorage.setItem('country', this.selectedCountry)
     localStorage.setItem('state', this.selectedState)
     localStorage.setItem('city', this.cityCtrl.value)
@@ -167,11 +169,7 @@ export class FilterDialogComponent {
     localStorage.removeItem("state")
     localStorage.removeItem("city")
     localStorage.removeItem("pincode")
-    const filterObject : IFilterData = {
-      data: this.resetData,
-      reset: true,
-    }
-    this.filterDataService.setFilterData(filterObject);
+    this.resetFormServ.setReset(true);
     this.loader.stop();
     this.closeDialog();
   }

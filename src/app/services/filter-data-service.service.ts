@@ -20,6 +20,5 @@ export class FilterDataService {
 
 export interface IFilterData{
    data : ApiPaginatedResponse<CharteredAccountant>
-   reset : boolean,
-   
+   reset : boolean, 
 }

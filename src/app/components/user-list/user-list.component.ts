@@ -20,6 +20,7 @@ import { FilterDataService } from '../../services/filter-data-service.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { resetFormServ } from '../../services/resetDataService';
 
 @Component({
   selector: 'app-user-list',
@@ -44,21 +45,21 @@ export class UserListComponent {
   metaData!: ApiPaginatedResponse<CharteredAccountant>;
   totalItemsCount = 0;
   currentPage = 1;
-  searchString: FormControl = new FormControl('');
+  searchFormControl: FormControl = new FormControl('');
   searchResults: CharteredAccountant[] = [];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  filteredDataList : CharteredAccountant[] = [];
+  filteredDataList: CharteredAccountant[] = [];
   isLoaded = false;
-  isLoadingUsers: boolean = false;
 
   constructor(
     private commonServ: CommonService,
     private router: Router,
     private userDataServ: UserDataService,
     private loaderServ: NgxUiLoaderService,
-    private filteredDataServ : FilterDataService,
-    private matDialog : MatDialog,
-    private toastr : ToastrService
+    private filteredDataServ: FilterDataService,
+    private matDialog: MatDialog,
+    private toastr: ToastrService,
+    private resetDataServ: resetFormServ
   ) {}
 
   ngOnInit(): void {
@@ -66,22 +67,29 @@ export class UserListComponent {
     //Add 'implements OnInit' to the class.
     this.getUsers();
     this.searchDebounce();
-    this.searchString?.valueChanges.subscribe(value => {
-      if(value.length == 0){
-        this.getAllUsersList()
+    this.searchFormControl?.valueChanges.subscribe((value) => {
+      if (value.length == 0) {
+        this.getAllUsersList();
       }
+    });
+    this.resetDataServ.getReset().subscribe({
+      next: (res) => {
+        if (res) {
+          this.callgetApi();
+        }
+      },
     });
   }
 
-  getUsers(){
+  getUsers() {
     this.filteredDataServ
       .getFilterData()
-      // .pipe(
-      //   debounceTime(300), // Add a small delay to avoid rapid triggering
-      //   distinctUntilChanged(
-      //     (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)
-      //   ) // Trigger only if the data is different
-      // )
+      .pipe(
+        debounceTime(300), // Add a small delay to avoid rapid triggering
+        distinctUntilChanged(
+          (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)
+        ) // Trigger only if the data is different
+      )
       .subscribe({
         next: (res) => {
           this.filteredDataList = res?.data?.results || [];
@@ -89,11 +97,7 @@ export class UserListComponent {
             this.chartedAccountant = res?.data?.results;
             this.totalItemsCount = res?.data?.count;
           } else {
-            if (!this.isLoadingUsers) {
-              this.isLoadingUsers = true;  // Set flag to prevent multiple calls
-              this.getAllUsersList();  // Call your method (even if it's void)
-              this.isLoadingUsers = false;  // Reset flag after calling
-            }
+            this.getAllUsersList(); // Call your method (even if it's void)
           }
         },
         error: (err) => {
@@ -103,73 +107,77 @@ export class UserListComponent {
   }
 
   searchDebounce() {
-    this.searchString?.valueChanges
-    .pipe(
-      // Trim the input value
-      map(value => value.trimStart()),
-      // Avoid emitting events when trimming the value
-      tap(trimmedValue => {
-        if (this.searchString.value !== trimmedValue) {
-          this.searchString.setValue(trimmedValue, { emitEvent: false });
-        }
-      }),
-      // Proceed only if the value is non-empty after trimming
-      filter(trimmedValue => trimmedValue.length > 0 ),
-      // Apply debounce to avoid unnecessary API calls
-      debounceTime(400),
-      // Proceed only if the length of the trimmed value is at least 3
-      filter(trimmedValue => trimmedValue.length > 2),
-      switchMap(trimmedValue => {
-        this.loaderServ.start();
-        // Call the API with the search text
-        return this.commonServ.searchApi(trimmedValue, this.currentPage);
-      })
-    )
-    .subscribe({
-      next: (result) => {
-        this.loaderServ.stop();
-        this.currentPage = 1;
-        this.paginator.firstPage();
-        this.totalItemsCount = result.count;
-        this.isLoaded = true;
-        this.chartedAccountant = result.results;
-      },
-      error: (error) => {
-        this.loaderServ.stop();
-        console.error('Search error:', error);
-      },
-    });
+    this.searchFormControl?.valueChanges
+      .pipe(
+        // Trim the input value
+        map((value) => value.trimStart()),
+        // Avoid emitting events when trimming the value
+        tap((trimmedValue) => {
+          if (this.searchFormControl.value !== trimmedValue) {
+            this.searchFormControl.setValue(trimmedValue, { emitEvent: false });
+          }
+        }),
+        // Proceed only if the value is non-empty after trimming
+        filter((trimmedValue) => trimmedValue.length > 0),
+        // Apply debounce to avoid unnecessary API calls
+        debounceTime(400),
+        // Proceed only if the length of the trimmed value is at least 3
+        filter((trimmedValue) => trimmedValue.length > 2),
+        switchMap((trimmedValue) => {
+          this.loaderServ.start();
+          // Call the API with the search text
+          return this.commonServ.searchApi(trimmedValue, this.currentPage);
+        })
+      )
+      .subscribe({
+        next: (result) => {
+          this.loaderServ.stop();
+          this.currentPage = 1;
+          this.paginator.firstPage();
+          this.totalItemsCount = result.count;
+          this.isLoaded = true;
+          this.chartedAccountant = result.results;
+        },
+        error: (error) => {
+          this.loaderServ.stop();
+          console.error('Search error:', error);
+        },
+      });
   }
 
   getAllUsersList() {
-    if(this.filteredDataList.length > 0){
+    if (this.filteredDataList.length > 0) {
       this.chartedAccountant = this.filteredDataList;
       this.isLoaded = true;
-    }else{
-      this.loaderServ.start()
-      this.commonServ.getAllUsers(this.currentPage).subscribe({
-        next: (res) => {
-          this.totalItemsCount = res.count;
-          this.chartedAccountant = res.results;
-          this.isLoaded = true;
-          this.loaderServ.stop()
-        },
-        error: (err) => {
-          if(err.status == 401){
-            localStorage.clear()
-            this.toastr.error('Token Expired, Login again')
-            this.router.navigate(['login']);
-          }
-          this.loaderServ.stop()
-        },
-      });
+    } else {
+      this.callgetApi();
     }
+  }
+
+  callgetApi() {
+    this.loaderServ.start();
+    this.commonServ.getAllUsers(this.currentPage, this.searchFormControl.value).subscribe({
+      next: (res) => {
+        this.totalItemsCount = res.count;
+        this.chartedAccountant = res.results;
+        this.isLoaded = true;
+        this.loaderServ.stop();
+      },
+      error: (err) => {
+        if (err.status == 401) {
+          localStorage.clear();
+          this.toastr.error('Token Expired, Login again');
+          this.router.navigate(['login']);
+        }
+        this.loaderServ.stop();
+      },
+    });
   }
 
   openUserProfile(ca: CharteredAccountant) {
     this.userDataServ.setUserData(ca);
     this.router.navigate([`user-profile/${ca.id}`]);
-  } 
+  }
 
   getSAddress(ca: CharteredAccountant) {
     let address = [
@@ -177,7 +185,7 @@ export class UserListComponent {
       ca.address_2 ?? '',
       ca.address_3 ?? '',
       ca.address_4 ?? '',
-      ca.city ?? '',  
+      ca.city ?? '',
       ca.state ?? '',
       ca.country ?? '',
     ];
@@ -188,70 +196,81 @@ export class UserListComponent {
   onPageChange(event: PageEvent) {
     this.loaderServ.start();
     this.currentPage = event.pageIndex + 1;
-    if(this.filteredDataList.length > 0){
+    if (this.filteredDataList.length > 0) {
       this.getAllFilteredUsers();
-    }else if (this.searchString.value) {
+    } else if (this.searchFormControl.value) {
       this.searchResult();
-    }else {
+    } else {
       this.getAllUsersList();
     }
     this.loaderServ.stop();
   }
 
-  getAllFilteredUsers(){
-    const country = localStorage.getItem('country') ?? ""
-    const state = localStorage.getItem('state') ?? ""
-    const city = localStorage.getItem('city') ?? ""
-    const pinCode = localStorage.getItem('pincode') ?? ""
-    this.commonServ.filter(country, state, city, pinCode, this.searchString.value, this.currentPage).subscribe({
-      next : (res)=>{
-        this.chartedAccountant = res.results;
-      },
-      error : (err) => {
-        alert('api error');
-      }
-    })
+  getAllFilteredUsers() {
+    const country = localStorage.getItem('country') ?? '';
+    const state = localStorage.getItem('state') ?? '';
+    const city = localStorage.getItem('city') ?? '';
+    const pinCode = localStorage.getItem('pincode') ?? '';
+    this.commonServ
+      .filter(
+        country,
+        state,
+        city,
+        pinCode,
+        this.searchFormControl.value,
+        this.currentPage
+      )
+      .subscribe({
+        next: (res) => {
+          this.chartedAccountant = res.results;
+        },
+        error: (err) => {
+          alert('api error');
+        },
+      });
   }
 
   searchResult() {
     this.loaderServ.start();
-    this.commonServ.searchApi(this.searchString.value, this.currentPage).subscribe({
-      next: (res) => {
-        this.totalItemsCount = res.count;
-        this.chartedAccountant = res.results;
-        this.loaderServ.stop();
-      },
-      error: (err) => {
-        alert('api error');
-        this.loaderServ.stop();
-      },
-    });
+    this.commonServ
+      .searchApi(this.searchFormControl.value, this.currentPage)
+      .subscribe({
+        next: (res) => {
+          this.totalItemsCount = res.count;
+          this.chartedAccountant = res.results;
+          this.loaderServ.stop();
+        },
+        error: (err) => {
+          alert('api error');
+          this.loaderServ.stop();
+        },
+      });
   }
 
-  userUpdate(event: Event, ca : CharteredAccountant) {
+  userUpdate(event: Event, ca: CharteredAccountant) {
     event.stopPropagation();
     this.userDataServ.setUserData(ca);
     this.router.navigate([`user-form/${ca.id}`]);
   }
 
-  logOut(){
+  logOut() {
     const matDialogRef = this.matDialog.open(ConfirmationDialogComponent, {
-      width: '320px',    // Set width
-      height: '160px',   // Set height (optional)
-      maxWidth: '80vw',  // Set maximum width (optional)
+      width: '320px', // Set width
+      height: '160px', // Set height (optional)
+      maxWidth: '80vw', // Set maximum width (optional)
       minWidth: '300px', // Set minimum width (optional)
       data: {
-        message: "Do you really want to log out..?"
-      }
-    })
+        message: 'Do you really want to log out..?',
+      },
+    });
 
     matDialogRef.afterClosed().subscribe({
-      next : (res)=>{
-        if(res.data == 'Yes'){
+      next: (res) => {
+        if (res.data == 'Yes') {
           localStorage.clear();
-          this.router.navigate(['login'])
+          this.router.navigate(['login']);
         }
-      }
-    })
+      },
+    });
   }
 }
