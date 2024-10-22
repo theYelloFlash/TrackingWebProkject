@@ -1,0 +1,310 @@
+<ngx-ui-loader></ngx-ui-loader>
+<section>
+  <div class="header-bg d-flex justify-content-center align-items-center">
+    <button class="position-absolute back-button bg-transparent border-0" (click)="goBack()"><i
+        class="fa-solid fa-arrow-left text-white fw-bold fs-4"></i></button>
+    <p class="text-white fs-4 fw-medium m-0">Update Details</p>
+  </div>
+  @if (userData) {
+  <div class="container mt-4 px-4" style="max-width: 650px;">
+    <!-- Profile Upload Section -->
+    <div class="align-items-center d-flex flex-column justify-content-center mb-4">
+      <div class="profile-image rounded-circle overflow-hidden align-items-baseline d-flex justify-content-center">
+        <img [src]="profile_pic ? profile_pic : 'assets/sampleImages/profile3.jpg'"
+          class="primary-shadow img-fluid w-100" alt="Profile Picture">
+      </div>
+      <button (click)="triggerFileInput()" class="primary-font mt-3  fw-medium border-0 p-2 fs-6">Update image</button>
+      <input type="file" #fileInput (change)="onFileSelect($event)" class="d-none" accept=".jpg, .jpeg, .png"  />
+    </div>
+
+    <!-- Form Starts Here -->
+    <h3 class="fw-bold fs-2">Personal Details</h3>
+
+    <form [formGroup]="userForm" (ngSubmit)="submitForm()">
+      <!-- Membership ID -->
+      <div class="my-4">
+        <label for="membershipId" class="form-label fw-medium fw-medium fs-6 py-2">Membership ID <span
+            class="text-warning">*</span></label>
+        <input matInput formControlName="mem_no" type="text" class="form-control py-4 rounded-4 border-secondary-subtle" maxlength="20" minlength="7"
+          id="membershipId" placeholder="Enter membership ID" required>
+        @if (getElement("mem_no").invalid || (getElement("mem_no").touched || getElement("mem_no").dirty)) {
+        <div class="text-danger">
+          @if (getElement('mem_no').errors?.['required']) {<small>Membership ID is required.</small>}
+          @if (getElement('mem_no').errors?.['pattern']) {<small>Invalid Member Id.</small>}
+          @if (getElement('mem_no').errors?.['maxlength'] || getElement('mem_no').errors?.['minlength']) {<small>memberId limit : 7-20</small>}
+        </div>
+        }
+      </div>
+
+      <!-- Associate Year -->
+      <div class="my-4">
+        <label for="associateYear" class="form-label fw-medium fs-6 py-2">Associate Year</label>
+        <input type="number" formControlName="ass_year" class="form-control py-4 rounded-4 border-secondary-subtle"
+          id="associateYear" placeholder="Enter associate year">
+          @if (getElement("ass_year").invalid && (getElement("ass_year").touched || getElement("ass_year").dirty)) {
+            <div class="text-danger">
+              @if (getElement('ass_year').errors?.['max']) {<small>Invalid Associate year.</small>}
+            </div>
+            }
+      </div>
+
+      <!-- Full Name -->
+      <div class="my-4">
+        <label for="fullName" class="form-label fw-medium fs-6 py-2">Full Name <span
+            class="text-warning">*</span></label>
+        <input type="text" formControlName="name" class="form-control py-4 rounded-4 border-secondary-subtle" maxlength="40"  
+          id="fullName" placeholder="Enter full name" required>
+        @if (getElement("name").invalid || (getElement("name").touched || getElement("name").dirty)) {
+        <div class="text-danger">
+          @if (getElement('name').errors?.['required']) {<small>Name is required.</small>}  
+          @if (getElement('name').errors?.['pattern']) {<small>Name must contain characters only.</small>}
+          @if (getElement('name').errors?.['onlySpaces']) {<small>invalid Name.</small>}
+          @if (getElement('name').errors?.['maxlength']) {<small>maxlength : 40</small>}
+        </div>
+        }
+      </div>
+
+      <!-- DOB -->
+      <!-- <div class="my-4">
+        <label for="dob" class="form-label fw-medium fs-6 py-2">DOB</label>
+        <div class="input-group">
+          <span class="input-group-text rounded-4 border-secondary-subtle me-2 px-3"><i
+              class="bi bi-calendar3"></i></span>
+          <input type="date" class="form-control py-4 rounded-4 border-secondary-subtle" id="dob"
+            placeholder="00-00-0000">
+        </div>
+      </div> -->
+
+      <!-- Email -->
+      <div class="my-4">
+        <label for="email" class="form-label fw-medium fs-6 py-2">Email <span class="text-warning">*</span></label>
+        <input type="email" formControlName="email" class="form-control py-4 rounded-4 border-secondary-subtle"
+          id="email" placeholder="Enter email" required>
+        @if (getElement("email").invalid && (getElement("email").touched || getElement("email").dirty)) {
+        <div class="text-danger">
+          @if (getElement('email').errors?.['required']) {<small>Email is required.</small>}
+          @if (getElement('email').errors?.['email']) {<small>Email should be in correct format.</small>}
+        </div>
+        }
+      </div>
+
+      <div class="my-4">
+        <label for="email" class="form-label fw-medium fs-6 py-2">Phone Number <span
+            class="text-warning">*</span></label>
+        <div class="container">
+          <div class="row mb-3">
+            <!-- Country Code Input -->
+            <div class="col-2 p-0">
+              <input type="number" class="form-control py-4 rounded-4 border-secondary-subtle w-100" id="phoneNumber"
+                placeholder="+91">
+            </div>
+            <!-- Phone Number Input -->
+            <div class="col-10 p-0 ps-2">
+              <input type="number" formControlName="mobile_no"
+                class="form-control py-4 rounded-4 border-secondary-subtle w-100" id="phoneNumber"
+                placeholder="0000 00000" required>
+              @if (getElement("mobile_no").invalid && (getElement("mobile_no").touched ||
+              getElement("mobile_no").dirty))
+              {
+              <div class="text-danger">
+                @if (getElement('mobile_no').errors?.['required']) {<small>mobile_no is required.</small>}
+                @if (getElement('mobile_no').errors?.['pattern']) {<small>Invalid Phone No</small>}
+                <!-- @if (getElement('mobile_no').errors?.['startsWithZero']) {<small>Invalid</small>} -->
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="my-4">
+        <label for="email" class="form-label fw-medium fs-6 py-2">Whatsapp Number</label>
+        <div class="container">
+          <div class="row mb-3">
+            <!-- Country Code Input -->
+            <div class="col-2 p-0">
+              <input type="number" class="form-control py-4 rounded-4 border-secondary-subtle w-100" id="phoneNumber"
+                placeholder="+91">
+            </div>
+            <!-- Phone Number Input -->
+            <div class="col-10 p-0 ps-2">
+              <input type="number"  formControlName="mobile_no"  class="form-control py-4 rounded-4 border-secondary-subtle w-100" id="phoneNumber"
+                placeholder="0000 00000">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="fw-bold fs-2">Address Details</h3>
+      <div class="my-4">
+        <label for="address" class="form-label fw-medium fs-6 py-2">Address <span class="text-warning">*</span></label>
+        <input type="text" formControlName="full_address" class="form-control py-4 rounded-4 border-secondary-subtle"
+          id="address" placeholder="Enter your current address" required> 
+        @if (getElement("full_address").invalid && (getElement("full_address").touched || getElement("full_address").dirty)) {
+        <div class="text-danger">
+          @if (getElement('full_address').errors?.['required']) {<small>full_address is required.</small>}
+          @if (getElement('full_address').errors?.['onlySpaces']) {<small>invalid Address.</small>}
+
+        </div>
+        }
+      </div>
+
+      <!-- <div class="my-4">
+        <label for="landmark" class="form-label fw-medium fs-6 py-2">Landmark <span
+            class="text-warning">*</span></label>
+        <input type="text" formControlName="address_2" class="form-control py-4 rounded-4 border-secondary-subtle"
+          id="landmark" placeholder="eg GT Mall" required>
+        @if (getElement("address_2")?.invalid && (getElement("address_2")?.touched || getElement("address_2")?.dirty)) {
+        <div class="text-danger">
+          @if (getElement('address_2')?.errors?.['required']) {<small>address_2 is required.</small>}
+        </div>
+        }
+      </div> -->
+
+      <div class="my-4">
+        <label for="city" class="form-label fw-medium fs-6 py-2">City<span class="text-warning">*</span></label>
+        <input type="text" formControlName="city" class="form-control py-4 rounded-4 border-secondary-subtle" id="city" maxlength="20"
+          placeholder="Enter city name" required>
+        @if (getElement("city").invalid && (getElement("city").touched || getElement("city").dirty)) {
+        <div class="text-danger">
+          @if (getElement('city').errors?.['required']) {<small>city is required.</small>}
+          @if (getElement('city').errors?.['onlySpaces']) {<small>invalid city name.</small>}
+        </div>
+        }
+      </div>
+
+      <div class="my-4">
+        <label for="state" class="form-label fw-medium fs-6 py-2">State <span class="text-warning">*</span></label>
+        <input type="text" formControlName="state" class="form-control py-4 rounded-4 border-secondary-subtle"  maxlength="20"
+          id="state" placeholder="Enter State" required>
+        @if (getElement("state").invalid && (getElement("state").touched || getElement("state").dirty)){
+        <div class="text-danger">
+          @if (getElement('state').errors?.['required']) {<small>state is required.</small>}
+          @if (getElement('state').errors?.['onlySpaces']) {<small>invalid state name.</small>}
+        </div>
+        }
+      </div>
+
+      <div class="my-4">
+        <label for="country" class="form-label fw-medium fs-6 py-2">Country <span class="text-warning">*</span></label>
+        <input type="text" formControlName="country" class="form-control py-4 rounded-4 border-secondary-subtle"  maxlength="15"
+          id="country" placeholder="Enter full name" required>
+        @if (getElement("country").invalid && (getElement("country").touched || getElement("country").dirty)) {
+        <div class="text-danger">
+          @if (getElement('country').errors?.['required']) {<small>country is required.</small>}
+          @if (getElement('country').errors?.['onlySpaces']){<small>Invalid Name.</small>}
+        </div>
+        }
+      </div>
+
+      <div class="my-4">
+        <label for="pincode" class="form-label fw-medium fs-6 py-2">Pin Code</label>
+        <input type="number" formControlName="pin" class="form-control py-4 rounded-4 border-secondary-subtle"
+          id="pincode" placeholder="000000">
+          @if (getElement("pin").invalid && (getElement("pin").touched || getElement("pin").dirty)) {
+            <div class="text-danger">
+              @if (getElement('pin').errors?.['max']) {<small>Invalid Pin Code.</small>}
+            </div>
+            }
+      </div>
+
+      <h3 class="fw-bold fs-2">Professional Details</h3>
+
+      <div class="my-4">
+        <label for="company" class="form-label fw-medium fs-6 py-2">Company Name</label>
+        <input type="text" formControlName="company_name" class="form-control py-4 rounded-4 border-secondary-subtle"  maxlength="30"
+          id="company" placeholder="Enter full name">
+          @if (getElement("company_name").invalid && (getElement("company_name").touched || getElement("company_name").dirty)) {
+          <div class="text-danger">
+            @if (getElement('company_name').errors?.['onlySpaces']){<small>Invalid comapany name.</small>}
+          </div>
+          }
+      </div>
+
+      <div class="my-4">
+        <label for="designation" class="form-label fw-medium fs-6 py-2">Designation</label>
+        <input type="text" formControlName="designation" class="form-control py-4 rounded-4 border-secondary-subtle"  maxlength="20"
+          id="designation" placeholder="Enter full name">
+          @if (getElement("designation").invalid && (getElement("designation").touched || getElement("designation").dirty)) {
+          <div class="text-danger">
+            @if (getElement('designation').errors?.['onlySpaces']){<small>Invalid name.</small>}
+          </div>
+          }
+      </div>
+
+      <div class="my-4">
+        <label for="designation" class="form-label fw-medium fs-6 py-2">Select</label>
+        <div class="d-flex gap-4 py-2">
+          <div class="form-check">
+            <input value="practice" formControlName="job_type" class="form-check-input" type="radio" name="job_type"
+              id="flexRadioDefault1">
+            <label class="form-check-label fs-6 ps-2" for="flexRadioDefault1">
+              Practice
+            </label>
+          </div>
+          <div class="form-check">
+            <input value="job" class="form-check-input" formControlName="job_type" type="radio" name="job_type"
+              id="flexRadioDefault2">
+            <label class="form-check-label fs-6 ps-2" for="flexRadioDefault2">
+              Job
+            </label>
+          </div>
+        </div>
+      </div>
+      
+
+      <h3 class="fw-bold fs-2">Additional Details</h3>
+      <div class="my-4">
+        <label for="rating" class="form-label fw-medium fs-6 py-2">Rating</label>
+        <input type="number" formControlName="rating" class="form-control py-4 rounded-4 border-secondary-subtle col-2"
+          id="rating" placeholder="0" min="1" max="5" step="1">
+          @if (userForm.get('rating')?.errors && userForm.get('rating')?.errors) {
+            <div>
+              @if (userForm.get('rating')?.errors?.['min']) {<small class="text-danger">Value must be at least 1.</small>}
+              @if (userForm.get('rating')?.errors?.['max']) { <small class="text-danger">Value cannot exceed 5.</small>}
+            </div>
+          }
+      </div>
+
+      <div class="my-4">
+        <label for="remark1" class="form-label fw-medium fs-6 py-2">Remark 1</label>
+        <textarea formControlName="remark1" type="text" class="form-control py-3 rounded-4 border-secondary-subtle" id="remark1" maxlength="100"
+          placeholder="Enter Remark 1"></textarea>
+          @if (getElement("remark1").invalid && (getElement("remark1").touched || getElement("remark1").dirty)) {
+            <div class="text-danger">
+              @if (getElement('remark1').errors?.['onlySpaces']){<small>Invalid Remark1.</small>}
+            </div>
+            }
+      </div>
+
+      <div class="my-4">
+        <label for="remark2" class="form-label fw-medium fs-6 py-2">Remark 2</label>
+        <textarea formControlName="remark2" type="text" class="form-control py-3 rounded-4 border-secondary-subtle" id="remark2" maxlength="100"
+          placeholder="Enter Remark 2"></textarea>
+          @if (getElement("remark2").invalid && (getElement("remark2").touched || getElement("remark2").dirty)) {
+            <div class="text-danger">
+              @if (getElement('remark2').errors?.['onlySpaces']){<small>Invalid Remark2.</small>}
+            </div>
+            }
+      </div>
+
+      <div class="my-4">
+        <label for="referenceBy" class="form-label fw-medium fs-6 py-2">Referece By</label>
+        <input formControlName="reference_by" type="text" class="form-control py-4 rounded-4 border-secondary-subtle" id="refferenceBy" maxlength="20"
+          placeholder="Enter any Refrence">
+          @if (getElement("reference_by").invalid && (getElement("reference_by").touched || getElement("reference_by").dirty)) {
+            <div class="text-danger">
+              @if (getElement('reference_by').errors?.['onlySpaces']){<small>Invalid Reference name.</small>}
+            </div>
+            }
+      </div>
+
+      <!-- Submit Button (Optional) -->
+      <div class="d-grid align-items-center my-5">
+        <button class="bg py-3 rounded-4 mb-3 text-white disable" type="submit"
+          [disabled]="userForm.invalid">Submit</button>
+      </div>
+    </form>
+  </div>
+  }
+</section>

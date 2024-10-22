@@ -1,0 +1,20 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+:root{
+    --primary-color : #033d62;
+}
+.primary-font {
+    color: var(--primary-color)
+}
+
+.special-font {
+    font-family: "Afacad Flux", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+.primary-shadow{box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;}
+
+

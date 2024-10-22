@@ -1,0 +1,47 @@
+<ngx-ui-loader></ngx-ui-loader>
+<div class=" w-100 vh-100 d-flex flex-column align-items-center small-height background">
+  <div class="mt-2 w-100 d-flex flex-column align-items-center justify-content-top bg-div">
+    <div class="text-center logo-header mb-2 mt-5 py-3">
+      <div class="py-3">
+        <img src="assets/logo/img.jpeg" alt="CA Logo" class="image-div" style="max-width: 80px;width: 100%;">
+      </div>
+      <h3 class="text-center heading-color fw-bold fs-1">CA VIJAY AGRAWAL</h3>
+    </div>
+    
+    <mat-card class="py-5 px-4 shadow custom-card" style="width: 90%; max-width: 400px;">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="d-flex flex-column">
+        <p class="fs-5 special-font">Username</p>
+        <mat-form-field appearance="outline" class="custom-outline mb-3">
+          <input matInput formControlName="user_name" required placeholder="Enter username" [minlength]="4" [maxlength]="15" />
+          @if(loginForm.get('user_name')!.hasError('required')){<mat-error>username is required.</mat-error>}
+          @if(loginForm.get('user_name')!.hasError('onlySpaces')){<mat-error>Invalid username.</mat-error>}
+          @else if(loginForm.get('user_name')!.hasError('minlength') ||
+          loginForm.get('user_name')!.hasError('maxLength')){<mat-error>username length : 4 - 15</mat-error>}
+        </mat-form-field>
+        <p class="fs-5 special-font">Password</p>
+        <mat-form-field appearance="outline" class="mb-3">
+          <input matInput [type]="hide ? 'password' : 'text'" type="password" formControlName="password" required placeholder="Enter Password" [minlength]="6" [maxlength]="15" />
+          <button mat-icon-button matSuffix (click)="hide = !hide"  type="button" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+            <i class="{{hide ? 'bi bi-eye-slash' : 'bi bi-eye'}}"></i>
+          </button>
+          <mat-error *ngIf="loginForm.get('password')!.hasError('required')">
+            Password is required.
+          </mat-error>
+          @if(loginForm.get('password')!.hasError('onlySpaces')){<mat-error>Invalid Password.</mat-error>}
+          @else if (loginForm.get('password')!.hasError('minlength') || loginForm.get('password')!.hasError('maxlength')) {
+            <mat-error>Password length: 6-15 characters.</mat-error>
+          }
+        </mat-form-field>
+      
+        <button mat-button type="submit" class="background text-light login-button p-4 special-font fs-4 disable"
+          [disabled]="this.loginForm.invalid">
+          Login
+        </button>
+        <a href="javascript:;" class="forget-password text-center pt-3 mt-2">Forget Password</a>
+
+      </form>
+      
+    </mat-card>
+  </div>
+</div>
+  

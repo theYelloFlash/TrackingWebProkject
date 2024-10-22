@@ -94,6 +94,7 @@ export class LoginPageComponent {
         },
       });
     } else {
+      console.log('Form is invalid');
     }
   }
 }

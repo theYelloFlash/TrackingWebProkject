@@ -74,6 +74,7 @@ export class UserFormComponent {
         },
         error: (err) => {
           this.loader.stop();
+          console.log('err', err);
         },
       });
     }else {
@@ -95,6 +96,7 @@ export class UserFormComponent {
         job_type: 'practice',
       });
     }
+    console.log(this.userForm);
   }
 
   buildUserForm() {
@@ -214,6 +216,7 @@ export class UserFormComponent {
   }
 
   goBack() {
+    console.log(this.userDataServ.getUserData())
     this.location.back();
   }
 }
