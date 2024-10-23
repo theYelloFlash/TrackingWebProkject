@@ -27,7 +27,10 @@
     width: 98%;
     margin-bottom: 8px;
     border: 1px solid rgb(186, 186, 186);
+    cursor: pointer;
+    transition: .3s ease-in-out;
 }
+.example-card:hover{transform: translateY(-3px);}
 .card-image{height: 100%; max-width: 150px; max-height: 180px; overflow: hidden; width: 55%;min-width: 130px;
 }   
 .paginator{position: sticky; bottom: 0;background-color: var(--primary-color);}

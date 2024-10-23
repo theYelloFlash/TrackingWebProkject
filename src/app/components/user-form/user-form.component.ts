@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MatRadioModule } from '@angular/material/radio';
 import { NoSpacesValidator as NoSpacesValidator } from '../../commonFunc/onlyspaceValidations';
 import { MatOptionModule } from '@angular/material/core';
-
+import CountryList, { Country } from 'country-list-with-dial-code-and-flag'
 
 @Component({
   selector: 'app-user-form',
@@ -37,6 +37,7 @@ export class UserFormComponent {
   @ViewChild('fileInput') fileInput!: ElementRef;
   formData!: FormData;
   profile_pic : string | null = ""
+  countryList : Array<Country> = []
 
   constructor(
     private fb: FormBuilder,
@@ -46,7 +47,7 @@ export class UserFormComponent {
     private commonServ: CommonService,
     private loader: NgxUiLoaderService,
     private router: Router,
-    private toastrServ: ToastrService
+    private toastrServ: ToastrService,
   ) {
     this.buildUserForm();
   }
@@ -54,10 +55,16 @@ export class UserFormComponent {
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
+    this.getAllcountriesCode();
     this.userId = this.route.snapshot.paramMap.get('id')!;
     this.formData = new FormData();
     this.userForm.get('full_address')?.disable();
     this.getFormData();
+  }
+
+  getAllcountriesCode(){
+    this.countryList = CountryList.getAll()
+    console.log(this.countryList[0])
   }
 
   getFormData() {
@@ -148,22 +155,11 @@ export class UserFormComponent {
 
   submitForm() {
     this.loader.start();
-    this.formData.append('name', this.userForm.controls['name'].value);
-    this.formData.append('mem_no', this.userForm.controls['mem_no'].value);
-    this.formData.append('ass_year', this.userForm.controls['ass_year'].value);
-    this.formData.append('email', this.userForm.controls['email'].value);
-    this.formData.append('mobile_no',this.userForm.controls['mobile_no'].value);
-    this.formData.append('full_address',this.userForm.controls['full_address']?.value);
-    this.formData.append('city', this.userForm.controls['city'].value);
-    this.formData.append('state', this.userForm.controls['state'].value);
-    this.formData.append('country', this.userForm.controls['country'].value);
-    this.formData.append('company_name',this.userForm.controls['company_name'].value);
-    this.formData.append('designation',this.userForm.controls['designation'].value);
-    this.formData.append('rating', this.userForm.controls['rating'].value);
-    this.formData.append('remark1', this.userForm.controls['remark1'].value);
-    this.formData.append('remark2', this.userForm.controls['remark2'].value);
-    this.formData.append('reference_by',this.userForm.controls['reference_by'].value);
-    this.formData.append('job_type', this.userForm.controls['job_type'].value);
+
+    // getting form fields and apending those values in formdata
+    Object.keys(this.userForm.controls).forEach(field => {
+      this.formData.append(field, this.userForm.controls[field].value);
+    });
     this.commonServ
       .updateCharterdAccountant(this.userId, this.formData)
       .subscribe({
