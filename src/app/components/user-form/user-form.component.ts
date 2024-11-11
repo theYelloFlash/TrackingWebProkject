@@ -1,6 +1,15 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { Location } from '@angular/common';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
+import { CommonModule, Location } from '@angular/common';
 import { UserDataService } from '../../services/sharedUserDataService';
 import { CharteredAccountant } from '../../Interface/apiResponse';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,7 +21,8 @@ import { ToastrService } from 'ngx-toastr';
 import { MatRadioModule } from '@angular/material/radio';
 import { NoSpacesValidator as NoSpacesValidator } from '../../commonFunc/onlyspaceValidations';
 import { MatOptionModule } from '@angular/material/core';
-import CountryList, { Country } from 'country-list-with-dial-code-and-flag'
+import CountryList, { Country } from 'country-list-with-dial-code-and-flag';
+import { RatingModule } from 'ng-starrating';
 
 @Component({
   selector: 'app-user-form',
@@ -24,6 +34,7 @@ import CountryList, { Country } from 'country-list-with-dial-code-and-flag'
     NgxUiLoaderModule,
     MatRadioModule,
     MatOptionModule,
+    CommonModule,
   ],
   providers: [CommonService],
   templateUrl: './user-form.component.html',
@@ -36,8 +47,9 @@ export class UserFormComponent {
   selectedFile: File | null = null;
   @ViewChild('fileInput') fileInput!: ElementRef;
   formData!: FormData;
-  profile_pic : string | null = ""
-  countryList : Array<Country> = []
+  profile_pic: string | null = '';
+  countryList: Array<Country> = [];
+  rating: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -47,7 +59,7 @@ export class UserFormComponent {
     private commonServ: CommonService,
     private loader: NgxUiLoaderService,
     private router: Router,
-    private toastrServ: ToastrService,
+    private toastrServ: ToastrService
   ) {
     this.buildUserForm();
   }
@@ -59,17 +71,27 @@ export class UserFormComponent {
     this.userId = this.route.snapshot.paramMap.get('id')!;
     this.formData = new FormData();
     this.userForm.get('full_address')?.disable();
+    this.userForm.get('city')?.disable();
+    this.userForm.get('state')?.disable();
+    this.userForm.get('country')?.disable();
+    this.userForm.get('pin')?.disable();
+    this.userForm.get('mem_no')?.disable();
     this.getFormData();
   }
 
-  getAllcountriesCode(){
-    this.countryList = CountryList.getAll()
-    console.log(this.countryList[0])
+  getAllcountriesCode() {
+    this.countryList = CountryList.getAll();
+    console.log(this.countryList[0]);
+  }
+
+  setRating(value: number): void {
+    this.rating = value;
+    this.userForm.get('rating')?.setValue(value);
   }
 
   getFormData() {
     this.userData = this.userDataServ.getUserData();
-    this.profile_pic = this.userData ? this.userData.profile_pic : "";
+    this.profile_pic = this.userData ? this.userData.profile_pic : '';
     if (!this.userData) {
       this.loader.start();
       this.commonServ.getUserByid(this.userId).subscribe({
@@ -84,7 +106,7 @@ export class UserFormComponent {
           console.log('err', err);
         },
       });
-    }else {
+    } else {
       this.patchDatailsForm();
     }
   }
@@ -92,6 +114,7 @@ export class UserFormComponent {
   patchDatailsForm() {
     this.userForm.patchValue(this.userData);
     this.userForm.patchValue(this.userData.feedbacks[0]);
+    this.rating = parseInt(this.userData.feedbacks[0]?.rating);
     this.userForm.patchValue({
       rating: this.userData.feedbacks[0]?.rating,
       remark1: this.userData.feedbacks[0]?.remark1,
@@ -108,41 +131,33 @@ export class UserFormComponent {
 
   buildUserForm() {
     this.userForm = this.fb.group({
-      mem_no: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(20),
-          Validators.minLength(7),
-          Validators.pattern('^\\S+$'),
-        ],
-      ],
-      ass_year: ['', [Validators.max(9999)]],
-      email: ['', [Validators.email, Validators.required]],
+      mem_no: ['', [Validators.pattern('^\\S+$'), Validators.maxLength(20)]],
+      ass_year: ['', [Validators.max(4000), Validators.min(1800)]],
+      email: ['', [Validators.email]],
       name: [
         '',
         [
-          Validators.required,
           Validators.pattern('^[a-zA-Z\\s]+$'),
           NoSpacesValidator,
-          Validators.maxLength(25),
+          Validators.maxLength(40),
         ],
       ],
       // dob :  ['', []],
-      mobile_no: [
-        '',[Validators.required, Validators.pattern('^[1-9]{1}[0-9]{9}$')],
-      ],
+      mobile_no: ['', [Validators.pattern('^[1-9]{1}[0-9]{9}$')]],
+      alternate_mobile_no: ['', []],
+      professional_city: ['', []],
+      professional_address: ['', []],
       // whatsapp :  ['', []],
       job_type: ['practice'],
-      full_address: ['', [Validators.required, NoSpacesValidator]],
+      full_address: ['', [NoSpacesValidator]],
       // address_2: ['', [Validators.required]],
-      city: ['', [Validators.required, NoSpacesValidator]],
-      state: ['', [Validators.required, NoSpacesValidator]],
-      country: ['', [Validators.required, NoSpacesValidator]],
+      city: ['', [NoSpacesValidator]],
+      state: ['', [NoSpacesValidator]],
+      country: ['', [NoSpacesValidator]],
       pin: ['', [Validators.max(999999)]],
       company_name: ['', [NoSpacesValidator]],
       designation: ['', [NoSpacesValidator]],
-      rating: ['', [Validators.min(1), Validators.max(5)]],
+      rating: [0, [Validators.max(5), this.emptyToZeroValidator]],
       remark1: ['', [NoSpacesValidator]],
       remark2: ['', [NoSpacesValidator]],
       reference_by: ['', [NoSpacesValidator]],
@@ -155,9 +170,8 @@ export class UserFormComponent {
 
   submitForm() {
     this.loader.start();
-
     // getting form fields and apending those values in formdata
-    Object.keys(this.userForm.controls).forEach(field => {
+    Object.keys(this.userForm.controls).forEach((field) => {
       this.formData.append(field, this.userForm.controls[field].value);
     });
     this.commonServ
@@ -189,6 +203,14 @@ export class UserFormComponent {
     this.fileInput.nativeElement.click();
   }
 
+  emptyToZeroValidator(control: AbstractControl): ValidationErrors | null {
+    if (control.value === null || control.value === '') {
+      control.setValue(0, { emitEvent: false }); // Set value to 0 without emitting change event
+      return null; // Validation passed
+    }
+    return null; // No errors
+  }
+
   onFileSelect(event: any) {
     if (event.target.files.length > 0) {
       this.selectedFile = event.target.files[0];
@@ -196,7 +218,7 @@ export class UserFormComponent {
       // Check if the file type is JPEG, PNG, or JPG
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
       if (!allowedTypes.includes(this.selectedFile!.type)) {
-        this.toastrServ.error('Invalid file format')
+        this.toastrServ.error('Invalid file format');
         return;
       }
 
@@ -212,8 +234,7 @@ export class UserFormComponent {
   }
 
   goBack() {
-    console.log(this.userDataServ.getUserData())
+    console.log(this.userDataServ.getUserData());
     this.location.back();
   }
 }
-

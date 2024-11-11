@@ -11,9 +11,9 @@
                         <div
                         class="card-body positioned-div text-center d-flex flex-column justify-content-center align-items-center">
                         <div class="mt-3 mb-4 dim rounded-circle profile-border bg-white primary-shadow">
-                            <img [src]="userData.profile_pic ? userData.profile_pic : 'assets/sampleImages/profile3.jpg'" class="img-fluid" />
+                            <img [src]="userData.profile_pic ? userData.profile_pic : 'assets/sampleImages/placeholder-profile-sq.jpg'" class="img-fluid" />
                         </div>
-                        <h4 class="mb-2 fw-bold fs-3 primary-font"> {{userData.name | slice:0:15}}{{userData.name.length > 15 ? "...." : ""}}</h4>
+                        <h4 class="mb-2 fw-bold fs-3 primary-font"> {{userData.name | slice:0:25}}{{userData.name.length > 25 ? "...." : ""}}</h4>
                         <div class="row py-3 w-100" style="max-width: 300px;">
                             <div class="col-4 p-0">
                                 <button type="button" data-mdb-button-init data-mdb-ripple-init (click)="callPerson()"
@@ -72,8 +72,8 @@
                                                 <p> {{ userData.mobile_no ? userData.mobile_no : "-"}}</p>
                                             </div>
                                             <div class="fs-6 d-flex">
-                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Whatsapp:</p>
-                                                <p> {{ userData.mobile_no ? userData.mobile_no : "-"}}</p>
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Alternate Phone No:</p>
+                                                <p> {{ userData.mobile_no ? userData.alternate_mobile_no : "-"}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -101,6 +101,10 @@
                                                 <p class="primary-font fw-medium m-0 mb-1 w-50">City:</p>
                                                 <p> {{userData.city}} </p>
                                             </div>
+                                            <div class="fs-6 d-flex">
+                                                <p class="primary-font fw-medium m-0 mb-1 w-50">Pincode:</p>
+                                                <p> {{userData.pin}} </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -115,15 +119,15 @@
                                         <div class="text-start fs-6">
                                             <div class="fs-6 d-flex">
                                                 <p class="primary-font fw-medium m-0 mb-1 w-50">Company:</p>
-                                                <p>{{userData.company_name}}</p>
+                                                <p class="w-50">{{userData.company_name ? userData.company_name : "-"}}</p>
                                             </div>
                                             <div class="fs-6 d-flex">
                                                 <p class="primary-font fw-medium m-0 mb-1 w-50">Designation:</p>
-                                                <p>{{userData.designation}}</p>
+                                                <p>{{userData.designation ? userData.designation : "-"}}</p>
                                             </div>
                                             <div class="fs-6 d-flex">
                                                 <p class="primary-font fw-medium m-0 mb-1 w-50">Choose:</p>
-                                                <p> {{userData.job_type}} </p>
+                                                <p> {{userData.job_type ? userData.job_type : "-"}} </p>
                                             </div>
                                         </div>
                                     </div>
@@ -147,7 +151,15 @@
                                                 </div>
                                                 <div class="fs-6">
                                                     <p class="primary-font fw-medium m-0 mb-1">Ratings:</p>
-                                                    <p> {{userData.feedbacks[0].rating ? userData.feedbacks[0].rating : "-"}}</p>
+                                                    <!-- <p> {{userData.feedbacks[0].rating ? userData.feedbacks[0].rating : "-"}}</p> -->
+                                                    <div class="star-rating mb-2 mt-2">
+                                                        <span
+                                                          *ngFor="let star of [1, 2, 3, 4, 5]; let i = index"
+                                                          class="star"
+                                                          [ngClass]="{'filled': i < ratings}">
+                                                          &#9733;
+                                                        </span>
+                                                    </div>
                                                 </div>
                                                 <div class="fs-6">
                                                     <p class="primary-font fw-medium m-0 mb-1">Reference:</p>

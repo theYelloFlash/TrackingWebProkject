@@ -1,20 +1,39 @@
-.header-bg{
-    background-color: var(--primary-color);
-    height: 100px;
+.header-bg {
+  background-color: var(--primary-color);
+  height: 100px;
 }
-.profile-image {height: 150px; width: 150px; border: 8px solid rgb(239, 239, 239);}
-.form-control{border-color: rgb(213, 131, 30)!;}
+.profile-image {
+  height: 150px;
+  width: 150px;
+  border: 8px solid rgb(239, 239, 239);
+}
+.form-control {
+  border-color: rgb(213, 131, 30) !;
+}
 input::placeholder,
 textarea::placeholder {
-    color: #c9c9c9;
-    font-size: 15px;
-    font-weight: 400;
-    opacity: 1;
+  color: #c9c9c9;
+  font-size: 15px;
+  font-weight: 400;
+  opacity: 1;
 }
-.bg{ background-color: var(--primary-color); border-color: var(--primary-color);}
-.back-button{left: 2rem;}
-.disable:disabled{background-color: #2074a8;border: none;}
-.form-check-input{border-color: var(--primary-color) !important; background-color: var(--primary-color) !important; width: 17px !important; height: 17px !important;}
+.bg {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+.back-button {
+  left: 2rem;
+}
+.disable:disabled {
+  background-color: #2074a8;
+  border: none;
+}
+.form-check-input {
+  border-color: var(--primary-color) !important;
+  background-color: var(--primary-color) !important;
+  width: 17px !important;
+  height: 17px !important;
+}
 /* Chrome, Safari, Edge, and Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -22,6 +41,16 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
+}
+.star-rating {
+  display: inline-block;
+  font-size: 24px;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.star-rating .star.filled {
+  color: gold;
 }

@@ -2,38 +2,53 @@
     <h2 class="py-2 px-1">Filter</h2>
     <form class="row" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="outline" class="w-100">
-            <mat-select formControlName="country" (selectionChange)="selectCountry($event)"  placeholder="Country">
-                @for (item of countries; track $index) {
-                    <mat-option [value]="item.id"> {{item.name}} </mat-option>
-                }
-            </mat-select>
-            <mat-error *ngIf="filterForm.get('country')?.hasError('required')">
-                country is required.
-            </mat-error>
-        </mat-form-field>
+            <input
+              type="text"
+              placeholder="Country"
+              aria-label="Country"
+              matInput
+              [formControl]="countryControl"
+              [matAutocomplete]="country"
+              [attr.autofocus]="'false'"
+            />
+            <mat-autocomplete #country="matAutocomplete" (optionSelected)="selectCountry($event)">
+              <mat-option *ngFor="let item of filteredCountries | async" [value]="item.name">
+                {{ item.name }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          
+
         <mat-form-field appearance="outline" class="w-100">
-            <mat-select formControlName="state" (selectionChange)="selectState($event)"  placeholder="States">
-                @for (item of states; track $index) {
-                <mat-option [value]='item.id'>{{item.name}}</mat-option>
-                }
-            </mat-select>
-            <mat-error *ngIf="filterForm.get('state')?.hasError('required')">
-                State is required.
-            </mat-error>
+            <input [formControl]="stateFormCtrl" type="text" placeholder="States" aria-label="States" matInput [matAutocomplete]="state"  (focus)="onFocusState()">
+            <mat-autocomplete #state="matAutocomplete" (optionSelected)="selectState($event)">
+                <mat-option>--Select--</mat-option>
+                <mat-option *ngFor="let item of filteredStates | async" [value]="item.name">
+                    {{ item.name }}
+                </mat-option>
+            </mat-autocomplete>
         </mat-form-field>
+
         <mat-form-field appearance="outline">
-            <mat-select [formControl]="cityCtrl" placeholder="City">
+            <input [formControl]="cityCtrl" type="text" placeholder="City" aria-label="City" matInput [matAutocomplete]="city" (focus)="onFocusCity()">
+            <mat-autocomplete #city="matAutocomplete">
+                <mat-option *ngFor="let item of filteredCities | async" [value]="item.name">
+                    {{ item.name }}
+                </mat-option>
+            </mat-autocomplete>
+            <!-- <mat-select [formControl]="cityCtrl" placeholder="City">
+                <mat-option class="text-secondary" [value]=""> --Selected-- </mat-option>
                 @for (item of cities; track $index) {
                 <mat-option [value]='item.id'>{{item.name}}</mat-option>
                 }
-            </mat-select>
-            <mat-error *ngIf="filterForm.get('state')?.hasError('required')">
+            </mat-select> -->
+            <!-- <mat-error *ngIf="filterForm.get('state')?.hasError('required')">
                 city is required.
-            </mat-error>
+            </mat-error> -->
         </mat-form-field>
         <mat-form-field appearance="outline" class="w-100">
-            <input matInput type="text" formControlName="pincode" placeholder="Enter pincode" maxlength="6" minlength="6">
-            <mat-error *ngIf="filterForm.get('pincode')?.hasError('maxlength') || filterForm.get('pincode')?.hasError('pattern')">
+            <input matInput type="text" formControlName="pincode" placeholder="Enter pincode" maxlength="10" minlength="4">
+            <mat-error *ngIf="filterForm.get('pincode')?.hasError('maxlength') || filterForm.get('pincode')?.hasError('minlength') || filterForm.get('pincode')?.hasError('pattern')">
                 Invalid Pincode
             </mat-error>
         </mat-form-field>

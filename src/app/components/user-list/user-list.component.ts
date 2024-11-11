@@ -6,7 +6,11 @@ import { FilterComponent } from '../filter/filter.component';
 import { HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator'; // Import MatPaginatorModule
+import {
+  MatPaginator,
+  MatPaginatorModule,
+  PageEvent,
+} from '@angular/material/paginator'; // Import MatPaginatorModule
 import { NgxUiLoaderModule, NgxUiLoaderService } from 'ngx-ui-loader';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonService } from '../../services/commonservices';
@@ -15,12 +19,20 @@ import {
   CharteredAccountant,
 } from '../../Interface/apiResponse';
 import { UserDataService } from '../../services/sharedUserDataService';
-import { debounceTime,distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
 import { FilterDataService } from '../../services/filter-data-service.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { resetFormServ } from '../../services/resetDataService';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-user-list',
@@ -39,6 +51,17 @@ import { resetFormServ } from '../../services/resetDataService';
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css',
   providers: [CommonService],
+  animations: [
+    trigger('iconChange', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.5)' }),
+        animate('300ms ease-in', style({ opacity: 1, transform: 'scale(1)' })),
+      ]),
+      transition(':leave', [
+        animate('300ms ease-out', style({ opacity: 0, transform: 'scale(1)' })),
+      ]),
+    ]),
+  ],
 })
 export class UserListComponent {
   chartedAccountant: CharteredAccountant[] = [];
@@ -50,6 +73,11 @@ export class UserListComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   filteredDataList: CharteredAccountant[] = [];
   isLoaded = false;
+  isFilterApplied = false;
+  localCountry: string = '';
+  localState: string = '';
+  localCity: string = '';
+  localPin: string = '';
 
   constructor(
     private commonServ: CommonService,
@@ -65,9 +93,13 @@ export class UserListComponent {
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
+    const searchItem = localStorage.getItem('search');
+    const loacalSearchData = searchItem ? JSON.parse(searchItem) : '';
+    this.searchFormControl.setValue(loacalSearchData);
     this.getUsers();
     this.searchDebounce();
     this.searchFormControl?.valueChanges.subscribe((value) => {
+      localStorage.setItem('search', JSON.stringify(value));
       if (value.length == 0) {
         this.getAllUsersList();
       }
@@ -75,7 +107,7 @@ export class UserListComponent {
     this.resetDataServ.getReset().subscribe({
       next: (res) => {
         if (res) {
-          this.callgetApi();
+          this.callGetApi();
         }
       },
     });
@@ -105,6 +137,11 @@ export class UserListComponent {
         },
       });
   }
+  clearSearch() {
+    localStorage.removeItem('search');
+    this.searchFormControl.setValue('');
+    this.callGetApi();
+  }
 
   searchDebounce() {
     this.searchFormControl?.valueChanges
@@ -125,8 +162,26 @@ export class UserListComponent {
         filter((trimmedValue) => trimmedValue.length > 2),
         switchMap((trimmedValue) => {
           this.loaderServ.start();
-          // Call the API with the search text
-          return this.commonServ.searchApi(trimmedValue, this.currentPage);
+          this.localCountry = localStorage.getItem('country') ?? '';
+          this.localState = localStorage.getItem('state') ?? '';
+          this.localCity = localStorage.getItem('city') ?? '';
+          this.localPin = localStorage.getItem('pincode') ?? '';
+          if (
+            this.localCity &&
+            this.localCountry &&
+            this.localPin &&
+            this.localState
+          ) {
+            this.isFilterApplied = true;
+          }
+          return this.commonServ.commonGetAllUsers(
+            trimmedValue,
+            this.currentPage,
+            this.localCity,
+            this.localState,
+            this.localCountry,
+            this.localPin
+          );
         })
       )
       .subscribe({
@@ -150,28 +205,38 @@ export class UserListComponent {
       this.chartedAccountant = this.filteredDataList;
       this.isLoaded = true;
     } else {
-      this.callgetApi();
+      this.callGetApi();
     }
   }
 
-  callgetApi() {
+  callGetApi() {
     this.loaderServ.start();
-    this.commonServ.getAllUsers(this.currentPage, this.searchFormControl.value).subscribe({
-      next: (res) => {
-        this.totalItemsCount = res.count;
-        this.chartedAccountant = res.results;
-        this.isLoaded = true;
-        this.loaderServ.stop();
-      },
-      error: (err) => {
-        if (err.status == 401) {
-          localStorage.clear();
-          this.toastr.error('Token Expired, Login again');
-          this.router.navigate(['login']);
-        }
-        this.loaderServ.stop();
-      },
-    });
+    console.log('loacalSearchData', this.searchFormControl.value);
+    this.commonServ
+      .commonGetAllUsers(
+        this.searchFormControl.value,
+        this.currentPage,
+        this.localCity,
+        this.localState,
+        this.localCountry,
+        this.localPin
+      )
+      .subscribe({
+        next: (res) => {
+          this.totalItemsCount = res.count;
+          this.chartedAccountant = res.results;
+          this.isLoaded = true;
+          this.loaderServ.stop();
+        },
+        error: (err) => {
+          if (err.status == 401) {
+            localStorage.clear();
+            this.toastr.error('Token Expired, Login again');
+            this.router.navigate(['login']);
+          }
+          this.loaderServ.stop();
+        },
+      });
   }
 
   openUserProfile(ca: CharteredAccountant) {
@@ -233,7 +298,7 @@ export class UserListComponent {
   searchResult() {
     this.loaderServ.start();
     this.commonServ
-      .searchApi(this.searchFormControl.value, this.currentPage)
+      .commonGetAllUsers(this.searchFormControl.value, this.currentPage)
       .subscribe({
         next: (res) => {
           this.totalItemsCount = res.count;

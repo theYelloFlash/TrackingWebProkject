@@ -7,54 +7,55 @@ import { CharteredAccountant } from '../../Interface/apiResponse';
 import { UserDataService } from '../../services/sharedUserDataService';
 import { CommonModule, Location } from '@angular/common';
 
-
 @Component({
   selector: 'app-user-profile',
   standalone: true,
   imports: [HttpClientModule, NgxUiLoaderModule, CommonModule],
-  providers : [CommonService],
+  providers: [CommonService],
   templateUrl: './user-profile.component.html',
-  styleUrl: './user-profile.component.css'
+  styleUrl: './user-profile.component.css',
 })
 export class UserProfileComponent {
-  userData! : CharteredAccountant
-  userId! : string;
+  userData!: CharteredAccountant;
+  userId!: string;
+  ratings = 0;
   selectedFile: File | null = null;
 
-  constructor(private userDataSharedServ : UserDataService,
-    private route : ActivatedRoute,
-    private router : Router,
-    private commonServ : CommonService,
-    private ngxLoader : NgxUiLoaderService,
-    private location: Location,
-  ){
-
-  }
+  constructor(
+    private userDataSharedServ: UserDataService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private commonServ: CommonService,
+    private ngxLoader: NgxUiLoaderService,
+    private location: Location
+  ) {}
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     this.userData = this.userDataSharedServ.getUserData();
+    this.ratings = parseInt(this.userData.feedbacks[0].rating);
     this.userId = this.route.snapshot.paramMap.get('id')!;
-    if(!this.userData){
+    if (!this.userData) {
       this.getUserbyId();
     }
   }
 
-  getUserbyId(){
-    this.ngxLoader.start()
+  getUserbyId() {
+    this.ngxLoader.start();
     this.commonServ.getUserByid(this.userId).subscribe({
-      next : (res)=> {
+      next: (res) => {
         this.userData = res;
-        this.ngxLoader.stop()
-      },
-      error : (err) => {
-        // window.alert('error in api')
-        this.ngxLoader.stop()
-      },
-      complete : ()=>{
+        this.ratings = parseInt(this.userData.feedbacks[0].rating);
         this.ngxLoader.stop();
-      }
-    })
+      },
+      error: (err) => {
+        // window.alert('error in api')
+        this.ngxLoader.stop();
+      },
+      complete: () => {
+        this.ngxLoader.stop();
+      },
+    });
   }
 
   getSAddress() {
@@ -69,10 +70,10 @@ export class UserProfileComponent {
       ca.country ?? '',
     ];
     address = address.filter((item) => item !== '');
-    return address.join(',');
+    return address.join(', ');
   }
 
-  openUpdateForm(event : Event){
+  openUpdateForm(event: Event) {
     event.stopPropagation();
     this.userDataSharedServ.setUserData(this.userData);
     this.router.navigate([`user-form/${this.userData.id}`]);
@@ -88,11 +89,11 @@ export class UserProfileComponent {
     this.location.back();
   }
 
-  callPerson(){
-    window.location.href =  `tel:${this.userData.mobile_no}`;
+  callPerson() {
+    window.location.href = `tel:${this.userData.mobile_no}`;
   }
 
-  openWhatsApp(){
-    window.location.href = `https://wa.me/+91${this.userData.mobile_no}?text=Hello%20there`
+  openWhatsApp() {
+    window.location.href = `https://wa.me/+91${this.userData.mobile_no}?text=Hello%20there`;
   }
 }
