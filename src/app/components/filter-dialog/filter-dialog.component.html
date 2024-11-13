@@ -78,7 +78,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="col-6">
-            <input [formControl]="memNoCtrl" type="text" placeholder="Member Id" aria-label="Member_No" matInput
+            <input [formControl]="memNoCtrl" type="text" placeholder="Membership No" aria-label="Member_No" matInput
                 [matAutocomplete]="mem_no">
             <mat-autocomplete #mem_no="matAutocomplete" (optionSelected)="selectMem_no()">
                 <mat-option *ngFor="let item of filteredMem_No" [value]="item.id">
@@ -93,7 +93,7 @@
 
 
         <mat-form-field appearance="outline" class="col-6">
-            <input [formControl]="mobile_no" type="text" placeholder="Mobile NO" aria-label="Mobile NO" matInput
+            <input [formControl]="mobile_no" type="text" placeholder="Mobile NO" aria-label="Mobile No" matInput
                 [matAutocomplete]="mobile">
             <mat-autocomplete #mobile="matAutocomplete">
                 <mat-option *ngFor="let item of filteredMobile_no" [value]="item.name">
