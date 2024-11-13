@@ -14,7 +14,7 @@
           class="primary-shadow img-fluid w-100" alt="Profile Picture">
       </div>
       <button (click)="triggerFileInput()" class="primary-font mt-3  fw-medium border-0 p-2 fs-6">Update image</button>
-      <input type="file" #fileInput (change)="onFileSelect($event)" class="d-none" accept=".jpg, .jpeg, .png"  />
+      <input type="file" #fileInput (change)="onFileSelect($event)" class="d-none" accept=".jpg, .jpeg, .png" />
     </div>
 
     <!-- Form Starts Here -->
@@ -24,13 +24,14 @@
       <!-- Membership ID -->
       <div class="my-4">
         <label for="membershipId" class="form-label fw-medium fw-medium fs-6 py-2">Membership ID </label>
-        <input matInput formControlName="mem_no" type="text" class="form-control py-4 rounded-4 border-secondary-subtle" maxlength="20"
-          id="membershipId" placeholder="Enter membership ID">
+        <input matInput formControlName="mem_no" type="text" class="form-control py-4 rounded-4 border-secondary-subtle"
+          maxlength="20" id="membershipId" placeholder="Enter membership ID">
         @if (getElement("mem_no").invalid || (getElement("mem_no").touched || getElement("mem_no").dirty)) {
         <div class="text-danger">
           <!-- @if (getElement('mem_no').errors?.['required']) {<small>Membership ID is required.</small>} -->
           @if (getElement('mem_no').errors?.['pattern']) {<small>Invalid Member Id. </small>}
-          @if (getElement('mem_no').errors?.['maxlength'] || getElement('mem_no').errors?.['minlength']) {<small>memberId limit : 20</small>}
+          @if (getElement('mem_no').errors?.['maxlength'] || getElement('mem_no').errors?.['minlength'])
+          {<small>memberId limit : 20</small>}
         </div>
         }
       </div>
@@ -38,20 +39,21 @@
       <!-- Associate Year -->
       <div class="my-4">
         <label for="associateYear" class="form-label fw-medium fs-6 py-2">Associate Year</label>
-        <input type="number" formControlName="ass_year" class="form-control py-4 rounded-4 border-secondary-subtle"
-          id="associateYear" placeholder="Enter associate year">
-          @if (getElement("ass_year").invalid && (getElement("ass_year").touched || getElement("ass_year").dirty)) {
-            <div class="text-danger">
-              @if (getElement('ass_year').errors?.['max'] || getElement('ass_year').errors?.['min']) {<small>Invalid Associate year.</small>}
-            </div>
-            }
+        <input type="text" formControlName="ass_year" class="form-control py-4 rounded-4 border-secondary-subtle"
+          maxlength="6" id="associateYear" placeholder="Enter associate year">
+        @if (getElement("ass_year").invalid && (getElement("ass_year").touched || getElement("ass_year").dirty)) {
+        <div class="text-danger">
+          @if (getElement('ass_year').errors?.['maxlength']) {<small>Invalid
+            Associate year.</small>}
+        </div>
+        }
       </div>
 
       <!-- Full Name -->
       <div class="my-4">
         <label for="fullName" class="form-label fw-medium fs-6 py-2">Full Name </label>
-        <input type="text" formControlName="name" class="form-control py-4 rounded-4 border-secondary-subtle" maxlength="40"  
-          id="fullName" placeholder="Enter full name">
+        <input type="text" formControlName="name" class="form-control py-4 rounded-4 border-secondary-subtle"
+          maxlength="40" id="fullName" placeholder="Enter full name">
         @if (getElement("name").invalid || (getElement("name").touched || getElement("name").dirty)) {
         <div class="text-danger">
           <!-- @if (getElement('name').errors?.['required']) {<small>Name is required.</small>}   -->
@@ -92,12 +94,13 @@
           <div class="row mb-3">
             <!-- Country Code Input -->
             <div class="col-md-2 col-3 p-0">
-                <select class="form-select rounded-4 border-secondary-subtle w-100"  aria-label="Default select example" style="padding: 12px;">
-                  <option selected value="+91">+91</option>
-                  <!-- @for (item of countryList; track $index) {
+              <select class="form-select rounded-4 border-secondary-subtle w-100" aria-label="Default select example"
+                style="padding: 12px;">
+                <option selected value="+91">+91</option>
+                <!-- @for (item of countryList; track $index) {
                     <option [value]="item.dial_code">{{item.dial_code}}</option>
                   } -->
-                </select>
+              </select>
             </div>
             <!-- Phone Number Input -->
             <div class="col-md-10 col-9 p-0 ps-2">
@@ -124,12 +127,13 @@
           <div class="row mb-3">
             <!-- Country Code Input -->
             <div class="col-md-2 col-3 p-0">
-                <select class="form-select rounded-4 border-secondary-subtle w-100"  aria-label="Default select example" style="padding: 12px;">
-                  <option selected value="+91">+91</option>
-                  <!-- @for (item of countryList; track $index) {
+              <select class="form-select rounded-4 border-secondary-subtle w-100" aria-label="Default select example"
+                style="padding: 12px;">
+                <option selected value="+91">+91</option>
+                <!-- @for (item of countryList; track $index) {
                     <option [value]="item.dial_code">{{item.dial_code}}</option>
                   } -->
-                </select>
+              </select>
             </div>
             <!-- Phone Number Input -->
             <div class="col-md-10 col-9 p-0 ps-2">
@@ -153,12 +157,13 @@
       <h3 class="fw-bold fs-2">Address Details</h3>
       <div class="my-4">
         <label for="address" class="form-label fw-medium fs-6 py-2">Address </label>
-        <input type="text" formControlName="full_address" class="form-control py-4 rounded-4 border-secondary-subtle"
-          id="address" placeholder="Enter your current address" > 
-        @if (getElement("full_address").invalid && (getElement("full_address").touched || getElement("full_address").dirty)) {
+        <input type="text" formControlName="address" class="form-control py-4 rounded-4 border-secondary-subtle"
+          id="address" placeholder="Enter your current address">
+        @if (getElement("address").invalid && (getElement("address").touched ||
+        getElement("address").dirty)) {
         <div class="text-danger">
-          <!-- @if (getElement('full_address').errors?.['required']) {<small>full_address is required.</small>} -->
-          @if (getElement('full_address').errors?.['onlySpaces']) {<small>invalid Address.</small>}
+          <!-- @if (getElement('address').errors?.['required']) {<small>address is required.</small>} -->
+          @if (getElement('address').errors?.['onlySpaces']) {<small>invalid Address.</small>}
 
         </div>
         }
@@ -166,8 +171,8 @@
 
       <div class="my-4">
         <label for="city" class="form-label fw-medium fs-6 py-2">City</label>
-        <input type="text" formControlName="city" class="form-control py-4 rounded-4 border-secondary-subtle" id="city" maxlength="20"
-          placeholder="Enter city name">
+        <input type="text" formControlName="city" class="form-control py-4 rounded-4 border-secondary-subtle" id="city"
+          maxlength="20" placeholder="Enter city name">
         @if (getElement("city").invalid && (getElement("city").touched || getElement("city").dirty)) {
         <div class="text-danger">
           <!-- @if (getElement('city').errors?.['required']) {<small>city is required.</small>} -->
@@ -178,8 +183,8 @@
 
       <div class="my-4">
         <label for="state" class="form-label fw-medium fs-6 py-2">State </label>
-        <input type="text" formControlName="state" class="form-control py-4 rounded-4 border-secondary-subtle"  maxlength="20"
-          id="state" placeholder="Enter State">
+        <input type="text" formControlName="state" class="form-control py-4 rounded-4 border-secondary-subtle"
+          maxlength="20" id="state" placeholder="Enter State">
         @if (getElement("state").invalid && (getElement("state").touched || getElement("state").dirty)){
         <div class="text-danger">
           <!-- @if (getElement('state').errors?.['required']) {<small>state is required.</small>} -->
@@ -190,8 +195,8 @@
 
       <div class="my-4">
         <label for="country" class="form-label fw-medium fs-6 py-2">Country </label>
-        <input type="text" formControlName="country" class="form-control py-4 rounded-4 border-secondary-subtle" 
-          id="country" placeholder="Enter full name" >
+        <input type="text" formControlName="country" class="form-control py-4 rounded-4 border-secondary-subtle"
+          id="country" placeholder="Enter full name">
         @if (getElement("country").invalid && (getElement("country").touched || getElement("country").dirty)) {
         <div class="text-danger">
           <!-- @if (getElement('country').errors?.['required']) {<small>country is required.</small>} -->
@@ -204,52 +209,57 @@
         <label for="pincode" class="form-label fw-medium fs-6 py-2">Pin Code</label>
         <input type="number" formControlName="pin" class="form-control py-4 rounded-4 border-secondary-subtle"
           id="pincode" placeholder="000000">
-          @if (getElement("pin").invalid && (getElement("pin").touched || getElement("pin").dirty)) {
-            <div class="text-danger">
-              @if (getElement('pin').errors?.['max']) {<small>Invalid Pin Code.</small>}
-            </div>
-            }
+        @if (getElement("pin").invalid && (getElement("pin").touched || getElement("pin").dirty)) {
+        <div class="text-danger">
+          @if (getElement('pin').errors?.['max']) {<small>Invalid Pin Code.</small>}
+        </div>
+        }
       </div>
 
       <h3 class="fw-bold fs-2">Professional Details</h3>
 
       <div class="my-4">
         <label for="company" class="form-label fw-medium fs-6 py-2">Company Name</label>
-        <input type="text" formControlName="company_name" class="form-control py-4 rounded-4 border-secondary-subtle"  maxlength="30"
-          id="company" placeholder="Enter full name">
-          @if (getElement("company_name").invalid && (getElement("company_name").touched || getElement("company_name").dirty)) {
-          <div class="text-danger">
-            @if (getElement('company_name').errors?.['onlySpaces']){<small>Invalid comapany name.</small>}
-          </div>
-          }
+        <input type="text" formControlName="company_name" class="form-control py-4 rounded-4 border-secondary-subtle"
+          maxlength="30" id="company" placeholder="Enter full name">
+        @if (getElement("company_name").invalid && (getElement("company_name").touched ||
+        getElement("company_name").dirty)) {
+        <div class="text-danger">
+          @if (getElement('company_name').errors?.['onlySpaces']){<small>Invalid comapany name.</small>}
+        </div>
+        }
       </div>
 
       <div class="my-4">
         <label for="designation" class="form-label fw-medium fs-6 py-2">Designation</label>
-        <input type="text" formControlName="designation" class="form-control py-4 rounded-4 border-secondary-subtle"  maxlength="20"
-          id="designation" placeholder="Enter full name">
-          @if (getElement("designation").invalid && (getElement("designation").touched || getElement("designation").dirty)) {
-          <div class="text-danger">
-            @if (getElement('designation').errors?.['onlySpaces']){<small>Invalid name.</small>}
-          </div>
-          }
+        <input type="text" formControlName="designation" class="form-control py-4 rounded-4 border-secondary-subtle"
+          maxlength="20" id="designation" placeholder="Enter full name">
+        @if (getElement("designation").invalid && (getElement("designation").touched ||
+        getElement("designation").dirty)) {
+        <div class="text-danger">
+          @if (getElement('designation').errors?.['onlySpaces']){<small>Invalid name.</small>}
+        </div>
+        }
       </div>
 
       <div class="my-4">
         <label for="address" class="form-label fw-medium fs-6 py-2">Address </label>
-        <input type="text" formControlName="professional_address" class="form-control py-4 rounded-4 border-secondary-subtle"
-          id="address" placeholder="Enter your current address" > 
-        @if (getElement("full_address").invalid && (getElement("full_address").touched || getElement("full_address").dirty)) {
+        <input type="text" formControlName="professional_address"
+          class="form-control py-4 rounded-4 border-secondary-subtle" id="professional_address"
+          placeholder="Enter your current professional_address">
+        @if (getElement("professional_address").invalid && (getElement("professional_address").touched ||
+        getElement("professional_address").dirty)) {
         <div class="text-danger">
-          <!-- @if (getElement('full_address').errors?.['required']) {<small>full_address is required.</small>} -->
-          @if (getElement('full_address').errors?.['onlySpaces']) {<small>invalid Address.</small>}
+          <!-- @if (getElement('professional_address').errors?.['required']) {<small>professional_address is required.</small>} -->
+          @if (getElement('professional_address').errors?.['onlySpaces']) {<small>invalid professional_address.</small>}
         </div>
         }
       </div>
 
       <div class="my-4">
         <label for="city" class="form-label fw-medium fs-6 py-2">City</label>
-        <input type="text" formControlName="professional_city"  class="form-control py-4 rounded-4 border-secondary-subtle" id="city" maxlength="20"
+        <input type="text" formControlName="professional_city"
+          class="form-control py-4 rounded-4 border-secondary-subtle" id="city" maxlength="20"
           placeholder="Enter city name">
         @if (getElement("city").invalid && (getElement("city").touched || getElement("city").dirty)) {
         <div class="text-danger">
@@ -278,17 +288,14 @@
           </div>
         </div>
       </div>
-      
+
 
       <h3 class="fw-bold fs-2">Additional Details</h3>
       <div class="my-4">
         <label for="rating" class="form-label fw-medium fs-6 py-2">Rating</label>
         <div>
           <div class="star-rating">
-            <span
-              *ngFor="let star of [1, 2, 3, 4, 5]; let i = index"
-              class="star"
-              [ngClass]="{'filled': i < rating}"
+            <span *ngFor="let star of [1, 2, 3, 4, 5]; let i = index" class="star" [ngClass]="{'filled': i < rating}"
               (click)="setRating(i + 1)">
               &#9733;
             </span>
@@ -296,39 +303,40 @@
           <input type="number" class="d-none" formControlName="rating" [value]="rating" />
         </div>
       </div>
-      
+
 
       <div class="my-4">
         <label for="remark1" class="form-label fw-medium fs-6 py-2">Remark 1</label>
-        <textarea formControlName="remark1" type="text" class="form-control py-3 rounded-4 border-secondary-subtle" id="remark1" maxlength="100"
-          placeholder="Enter Remark 1"></textarea>
-          @if (getElement("remark1").invalid && (getElement("remark1").touched || getElement("remark1").dirty)) {
-            <div class="text-danger">
-              @if (getElement('remark1').errors?.['onlySpaces']){<small>Invalid Remark1.</small>}
-            </div>
-            }
+        <textarea formControlName="remark1" type="text" class="form-control py-3 rounded-4 border-secondary-subtle"
+          id="remark1" maxlength="100" placeholder="Enter Remark 1"></textarea>
+        @if (getElement("remark1").invalid && (getElement("remark1").touched || getElement("remark1").dirty)) {
+        <div class="text-danger">
+          @if (getElement('remark1').errors?.['onlySpaces']){<small>Invalid Remark1.</small>}
+        </div>
+        }
       </div>
 
       <div class="my-4">
         <label for="remark2" class="form-label fw-medium fs-6 py-2">Remark 2</label>
-        <textarea formControlName="remark2" type="text" class="form-control py-3 rounded-4 border-secondary-subtle" id="remark2" maxlength="100"
-          placeholder="Enter Remark 2"></textarea>
-          @if (getElement("remark2").invalid && (getElement("remark2").touched || getElement("remark2").dirty)) {
-            <div class="text-danger">
-              @if (getElement('remark2').errors?.['onlySpaces']){<small>Invalid Remark2.</small>}
-            </div>
-            }
+        <textarea formControlName="remark2" type="text" class="form-control py-3 rounded-4 border-secondary-subtle"
+          id="remark2" maxlength="100" placeholder="Enter Remark 2"></textarea>
+        @if (getElement("remark2").invalid && (getElement("remark2").touched || getElement("remark2").dirty)) {
+        <div class="text-danger">
+          @if (getElement('remark2').errors?.['onlySpaces']){<small>Invalid Remark2.</small>}
+        </div>
+        }
       </div>
 
       <div class="my-4">
         <label for="referenceBy" class="form-label fw-medium fs-6 py-2">Referece By</label>
-        <input formControlName="reference_by" type="text" class="form-control py-4 rounded-4 border-secondary-subtle" id="refferenceBy" maxlength="20"
-          placeholder="Enter any Refrence">
-          @if (getElement("reference_by").invalid && (getElement("reference_by").touched || getElement("reference_by").dirty)) {
-            <div class="text-danger">
-              @if (getElement('reference_by').errors?.['onlySpaces']){<small>Invalid Reference name.</small>}
-            </div>
-            }
+        <input formControlName="reference_by" type="text" class="form-control py-4 rounded-4 border-secondary-subtle"
+          id="refferenceBy" maxlength="20" placeholder="Enter any Refrence">
+        @if (getElement("reference_by").invalid && (getElement("reference_by").touched ||
+        getElement("reference_by").dirty)) {
+        <div class="text-danger">
+          @if (getElement('reference_by').errors?.['onlySpaces']){<small>Invalid Reference name.</small>}
+        </div>
+        }
       </div>
 
       <!-- Submit Button (Optional) -->

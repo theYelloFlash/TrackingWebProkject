@@ -70,7 +70,7 @@ export class UserFormComponent {
     this.getAllcountriesCode();
     this.userId = this.route.snapshot.paramMap.get('id')!;
     this.formData = new FormData();
-    this.userForm.get('full_address')?.disable();
+    this.userForm.get('address')?.disable();
     this.userForm.get('city')?.disable();
     this.userForm.get('state')?.disable();
     this.userForm.get('country')?.disable();
@@ -132,7 +132,7 @@ export class UserFormComponent {
   buildUserForm() {
     this.userForm = this.fb.group({
       mem_no: ['', [Validators.pattern('^\\S+$'), Validators.maxLength(20)]],
-      ass_year: ['', [Validators.max(4000), Validators.min(1800)]],
+      ass_year: [''],
       email: ['', [Validators.email]],
       name: [
         '',
@@ -149,7 +149,7 @@ export class UserFormComponent {
       professional_address: ['', []],
       // whatsapp :  ['', []],
       job_type: ['practice'],
-      full_address: ['', [NoSpacesValidator]],
+      address: ['', [NoSpacesValidator]],
       // address_2: ['', [Validators.required]],
       city: ['', [NoSpacesValidator]],
       state: ['', [NoSpacesValidator]],

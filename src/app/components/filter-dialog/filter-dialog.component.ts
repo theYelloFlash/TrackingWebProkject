@@ -29,7 +29,8 @@ import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
-import { BehaviorSubject, map, Observable, startWith } from 'rxjs';
+import { BehaviorSubject, debounceTime, filter, map, Observable, startWith, switchMap, tap } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-filter-dialog',
@@ -44,6 +45,7 @@ import { BehaviorSubject, map, Observable, startWith } from 'rxjs';
     MatSelectModule,
     HttpClientModule,
     MatAutocompleteModule,
+    MatIconModule
   ],
   providers: [CommonService],
   templateUrl: './filter-dialog.component.html',
@@ -56,6 +58,7 @@ export class FilterDialogComponent {
   cities: AddressArray[] = [];
   selectedCountry: string = '';
   selectedState: string = '';
+  selectedCity: string = '';
   cityCtrl: FormControl = new FormControl('');
   pinCode = '';
   resetData: ApiPaginatedResponse<CharteredAccountant> = {
@@ -74,6 +77,16 @@ export class FilterDialogComponent {
 
   citySubject = new BehaviorSubject<AddressArray[]>(this.cities ?? []);
   filteredCities = this.citySubject.asObservable();
+  filteredPinList: AddressArray[] = [];
+  filteredNameList: AddressArray[] = [];
+  filteredMem_No: AddressArray[] = [];
+  filteredMobile_no: AddressArray[] = [];
+
+  nameCtrl: FormControl = new FormControl('');
+  pin: FormControl = new FormControl('');
+  memNoCtrl: FormControl = new FormControl('');
+  mobile_no: FormControl = new FormControl('');
+  alternate_mobile_no: FormControl = new FormControl('');
 
   constructor(
     private fb: FormBuilder,
@@ -82,7 +95,7 @@ export class FilterDialogComponent {
     private filterDataService: FilterDataService,
     private loader: NgxUiLoaderService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -90,32 +103,44 @@ export class FilterDialogComponent {
     this.buildFilterForm();
     this.filteredCountries = this.countryControl.valueChanges.pipe(
       startWith(''),
-      map((value) => this._filter(value || this.countries, this.countries))
+      map((value) => {
+        // Set the selected country whenever the value changes
+        this.selectedCountry = value;
+        return this._filter(value || this.countries, this.countries);
+      })
     );
     this.stateFormCtrl.valueChanges
       .pipe(
         startWith(''),
-        map((value) => this._filter(value, this.states))
+        map((value) => {
+          this.selectedState = value;
+          // this.cityCtrl.reset()
+          return this._filter(value, this.states)
+        })
       )
       .subscribe((filtered) => this.stateSubject.next(filtered));
-
     this.cityCtrl.valueChanges
       .pipe(
         startWith(''),
-        map((value) => this._filter(value, this.cities))
+        map((value) =>
+          this._filter(value, this.cities))
       )
       .subscribe((filtered) => this.citySubject.next(filtered));
 
     const country = localStorage.getItem('country');
     const pincodeLocal = localStorage.getItem('pincode')!;
     if (pincodeLocal) {
-      this.filterForm.patchValue({ pincode: pincodeLocal });
+      this.pin.patchValue(pincodeLocal);
     }
+    this.nameCtrl.patchValue(localStorage.getItem('name') ?? '');
+    this.memNoCtrl.patchValue(localStorage.getItem('mem_no') ?? '');
+    this.mobile_no.patchValue(localStorage.getItem('mobile') ?? '');
     if (country) {
       this.filterForm.patchValue({ country: country });
       this.selectedCountry = country;
       this.getStates();
     }
+    this.searchDebounce()
     this.getCountries();
   }
 
@@ -123,14 +148,129 @@ export class FilterDialogComponent {
     if (Array.isArray(value)) {
       return value; // Return the entire countries list initially
     }
-    const filterValue = value.toLowerCase();
+    const filterValue = value?.toLowerCase();
     return field!.filter((field) =>
       field.name.toLowerCase().includes(filterValue)
     );
   }
 
+
+  searchDebounce() {
+    this.pin.valueChanges.pipe(
+      debounceTime(500),
+      filter((value) => value !== ''),
+      tap((value) => {
+        console.log(value)
+        if (value === '') {
+          this.clearOnPin();
+        }
+      }),
+      switchMap((value) => {
+        return this.commonServ.pinSearch(value ?? "", this.countryControl.value, this.stateFormCtrl.value, this.cityCtrl.value, this.nameCtrl.value!, this.memNoCtrl.value!, this.mobile_no.value!)
+      })
+    ).subscribe({
+      next: (res) => {
+        this.filteredPinList = res.pins;
+      }
+    })
+
+    this.nameCtrl.valueChanges.pipe(
+      debounceTime(500),
+      tap((value) => {
+        if (value === '') {
+          this.clearOnName();
+        }
+      }),
+      filter((value) => value !== ''),
+      switchMap((value) => {
+        return this.commonServ.nameSearch(value ?? "", this.countryControl.value, this.stateFormCtrl.value, this.cityCtrl.value, this.pin.value!, this.memNoCtrl.value!, this.mobile_no.value!)
+      })
+    ).subscribe({
+      next: (res) => {
+        this.filteredNameList = res.names;
+      }
+    })
+
+    this.memNoCtrl.valueChanges.pipe(
+      debounceTime(500),
+      tap((value) => {
+        if (value === '') {
+          this.memNoCtrl.setValue('');
+        }
+      }),
+      filter((value) => value !== ''),
+      switchMap((value) => {
+        return this.commonServ.memNoSearch(value ?? "", this.countryControl.value, this.stateFormCtrl.value, this.cityCtrl.value, this.pin.value!, this.mobile_no.value!, this.nameCtrl.value!)
+      })
+    ).subscribe({
+      next: (res) => {
+        this.filteredMem_No = res.mem_numbers;
+      }
+    })
+
+    this.mobile_no.valueChanges.pipe(
+      debounceTime(500),
+      filter((value) => value !== ''),
+      switchMap((value) => {
+        return this.commonServ.mobileNoSearch(value ?? "", this.countryControl.value, this.stateFormCtrl.value, this.cityCtrl.value, this.nameCtrl.value!, this.pin.value!, this.memNoCtrl.value!)
+      })
+    ).subscribe({
+      next: (res) => {
+        this.filteredMobile_no = res.mobile_numbers;
+      }
+    })
+  }
+
   onFocusState() {
     this.stateSubject.next(this.states); // Show full list on focus
+  }
+
+  clearValue(formCtrl: FormControl) {
+    formCtrl.setValue('');
+    if (formCtrl == this.countryControl) {
+      this.clearOnCountry();
+    }
+    if (formCtrl == this.stateFormCtrl) {
+      this.clearOnState();
+    }
+    if (formCtrl == this.cityCtrl) {
+      this.clearOnCity()
+    }
+    if (formCtrl == this.pin) {
+      this.clearOnPin()
+    }
+    if (formCtrl == this.nameCtrl) {
+      this.clearOnName();
+    }
+    if (formCtrl == this.memNoCtrl) {
+      this.mobile_no.setValue('');
+    }
+  }
+
+  clearOnState() {
+    this.cityCtrl.setValue('');
+    this.pin.setValue('');
+    this.memNoCtrl.setValue('');
+    this.nameCtrl.setValue('');
+    this.mobile_no.setValue('');
+  }
+
+  clearOnCity() {
+    this.pin.setValue('');
+    this.memNoCtrl.setValue('');
+    this.nameCtrl.setValue('');
+    this.mobile_no.setValue('');
+  }
+
+  clearOnPin() {
+    this.memNoCtrl.setValue('');
+    this.nameCtrl.setValue('');
+    this.mobile_no.setValue('');
+  }
+
+  clearOnName() {
+    this.memNoCtrl.setValue('');
+    this.mobile_no.setValue('');
   }
 
   onFocusCity() {
@@ -147,7 +287,7 @@ export class FilterDialogComponent {
         [
           Validators.maxLength(10),
           Validators.minLength(4),
-          Validators.pattern('^[0-9-]*$'),
+          // Validators.pattern('^[0-9-]*$'),
         ],
       ],
     });
@@ -171,27 +311,35 @@ export class FilterDialogComponent {
     this.countriesSubject.next([...this.countries]); // Emit the updated array
   }
 
-  // addStates(newStates: AddressArray[]): void {
-  //   this.states.push(...newStates); // Add the new country to the array
-  //   this.statesSubject.next([...this.states]); // Emit the updated array
-  // }
-
   selectCountry(event: MatAutocompleteSelectedEvent) {
-    this.selectedCountry = event.option.value;
+    this.selectedCountry = this.countryControl.value;
     if (this.selectedCountry) {
       localStorage.removeItem('city');
       localStorage.removeItem('state');
       this.selectedState = '';
-      this.cityCtrl.setValue('');
+      this.clearOnCountry()
       this.getStates();
     }
+  }
+
+  clearOnCountry() {
+    this.stateFormCtrl.setValue('');
+    this.cityCtrl.setValue('');
+    this.pin.setValue('');
+    this.memNoCtrl.setValue('');
+    this.nameCtrl.setValue('');
+    this.mobile_no.setValue('');
   }
 
   selectState(event: MatAutocompleteSelectedEvent) {
     if (event.option.value) {
       this.selectedState = event.option.value;
+      this.clearOnState();
       this.getCities();
     }
+  }
+  selectMem_no() {
+    this.mobile_no.setValue('');
   }
 
   getStates() {
@@ -232,22 +380,27 @@ export class FilterDialogComponent {
   }
 
   onSubmit() {
-    localStorage.setItem('country', this.selectedCountry);
+    localStorage.setItem('country', this.countryControl.value);
     localStorage.setItem('state', this.selectedState);
     localStorage.setItem('city', this.cityCtrl.value);
-    this.pinCode = this.filterForm.controls['pincode'].value;
-    localStorage.setItem('pincode', this.pinCode);
+    localStorage.setItem('pincode', this.pin.value);
+    localStorage.setItem('name', this.nameCtrl.value!);
+    localStorage.setItem('mem_no', this.memNoCtrl.value!);
+    localStorage.setItem('mobile', this.mobile_no.value!);
     this.loader.start();
     const searchItem = localStorage.getItem('search');
     const loacalSearchData = searchItem ? JSON.parse(searchItem) : '';
     this.commonServ
       .filter(
-        this.selectedCountry,
+        this.countryControl.value,
         this.selectedState,
         this.cityCtrl.value,
-        this.pinCode,
+        this.pin.value!,
         loacalSearchData,
-        1
+        1,
+        this.nameCtrl.value!,
+        this.memNoCtrl.value!,
+        this.mobile_no.value!,
       )
       .subscribe({
         next: (res) => {
@@ -278,6 +431,9 @@ export class FilterDialogComponent {
     localStorage.removeItem('state');
     localStorage.removeItem('city');
     localStorage.removeItem('pincode');
+    localStorage.removeItem('mobile');
+    localStorage.removeItem('mem_no');
+    localStorage.removeItem('name');
     const filterObject: IFilterData = {
       data: this.resetData,
       reset: true,
@@ -292,10 +448,8 @@ export class FilterDialogComponent {
   }
 
   get isFormValid(): boolean {
-    return this.filterForm.controls['pincode'].value
-      ? this.filterForm.controls['pincode'].valid
-      : this.cityCtrl.value ||
-          this.filterForm.controls['state'].value ||
-          this.filterForm.controls['country'].value;
+    return this.cityCtrl.value || this.pin.value ||
+      this.stateFormCtrl.value ||
+      this.countryControl.value || this.nameCtrl.value || this.memNoCtrl.value || this.mobile_no.value;
   }
 }

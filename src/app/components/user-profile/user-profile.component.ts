@@ -28,12 +28,12 @@ export class UserProfileComponent {
     private commonServ: CommonService,
     private ngxLoader: NgxUiLoaderService,
     private location: Location
-  ) {}
+  ) { }
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     this.userData = this.userDataSharedServ.getUserData();
-    this.ratings = parseInt(this.userData.feedbacks[0].rating);
+    this.ratings = parseInt(this.userData?.feedbacks[0]?.rating);
     this.userId = this.route.snapshot.paramMap.get('id')!;
     if (!this.userData) {
       this.getUserbyId();
@@ -45,7 +45,7 @@ export class UserProfileComponent {
     this.commonServ.getUserByid(this.userId).subscribe({
       next: (res) => {
         this.userData = res;
-        this.ratings = parseInt(this.userData.feedbacks[0].rating);
+        this.ratings = parseInt(this.userData.feedbacks[0]?.rating);
         this.ngxLoader.stop();
       },
       error: (err) => {

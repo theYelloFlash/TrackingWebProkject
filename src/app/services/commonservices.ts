@@ -97,10 +97,11 @@ export class CommonService {
     city: string,
     pincode: string,
     searchString?: string,
-    page?: number
+    page?: number,
+    name?: string, mem_no?: string, mobile?: string
   ): Observable<ApiPaginatedResponse<CharteredAccountant>> {
     return this.http.get<ApiPaginatedResponse<CharteredAccountant>>(
-      `${this.environment}chartered-accountants/?search_query=${searchString}&page=${page}&city=${city}&state=${state}&country=${country}&pin=${pincode}`,
+      `${this.environment}chartered-accountants/?search_query=${searchString}&page=${page}&city=${city}&state=${state}&country=${country}&pin=${pincode}&name=${name}&mem_no=${mem_no}&mobile_no=${mobile}`,
       { headers: this.headers }
     );
   }
@@ -114,5 +115,21 @@ export class CommonService {
       data,
       { headers: this.headers }
     );
+  }
+
+  pinSearch(value: string, country: string, state: string, city: string, name?: string, mem_no?: string, mobile_no?: string): Observable<any> {
+    return this.http.get<any>(`${this.environment}api/pins/?pin=${value}&city=${city}&state=${state}&country=${country}&name=${name}&mem_no=${mem_no}&mobile_no=${mobile_no}`, { headers: this.headers });
+  }
+
+  nameSearch(value: string, country: string, state: string, city: string, pin: string, mem_no: string, mobile_no: string): Observable<any> {
+    return this.http.get<any>(`${this.environment}api/names/?name=${value}&city=${city}&state=${state}&country=${country}&mem_no=${mem_no}&mobile_no=${mobile_no}&pin=${pin}`, { headers: this.headers });
+  }
+
+  memNoSearch(value: string, country: string, state: string, city: string, pin: string, mobile_no: string, name: string): Observable<any> {
+    return this.http.get<any>(`${this.environment}api/memnumbers/?mem_no=${value}&city=${city}&state=${state}&country=${country}&mobile_no=${mobile_no}&name=${name}&pin=${pin}`, { headers: this.headers });
+  }
+
+  mobileNoSearch(value: string, country: string, state: string, city: string, name: string, pin: string, mem_no: string): Observable<any> {
+    return this.http.get<any>(`${this.environment}api/mobilenumbers/?mobile_no=${value}&city=${city}&state=${state}&country=${country}&name=${name}&pin=${pin},&mem_no=${mem_no}`, { headers: this.headers });
   }
 }

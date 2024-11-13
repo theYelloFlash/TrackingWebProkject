@@ -2,18 +2,20 @@
 <div>
     <div class="search-header p-4 d-flex justify-content-center align-items-center gap-3 sticky-top">
         <div class="search-bar-container d-flex justify-content-between align-item-center">
-            <input matInput [formControl]="searchFormControl" placeholder="Search by Address." class="fs-4 special-font border-0 p-1" type="text">    
+            <input matInput [formControl]="searchFormControl" placeholder="Search by Address."
+                class="fs-4 special-font border-0 p-1" type="text">
             <div>
                 <ng-container *ngIf="searchFormControl.value?.length === 0; else clearIcon">
                     <i class="bi bi-search fs-4 me-1"></i>
                 </ng-container>
                 <ng-template #clearIcon>
-                  <i class="bi bi-x fs-1" @iconChange (click)="clearSearch()"></i>
+                    <i class="bi bi-x fs-1" @iconChange (click)="clearSearch()"></i>
                 </ng-template>
-              </div>
+            </div>
         </div>
         <div>
-            <button class="bg-none bg-transparent outline-0 border-0" (click)="logOut()"><i class="bi bi-box-arrow-right text-white fs-1"></i></button>
+            <button class="bg-none bg-transparent outline-0 border-0" (click)="logOut()"><i
+                    class="bi bi-box-arrow-right text-white fs-1"></i></button>
         </div>
     </div>
     <app-filter></app-filter>
@@ -28,27 +30,33 @@
         <div class="row container d-flex justify-content-center align-item-center gap-2 mt-2">
             @for (item of chartedAccountant; track $index) {
             <mat-card (click)="openUserProfile(item)"
-                class="example-card rounded-4 mt-2 p-3 gap-2 d-flex justify-content-between flex-row overflow-hidden" appearance="outlined">
+                class="example-card rounded-4 mt-2 p-3 gap-2 d-flex justify-content-between flex-row overflow-hidden"
+                appearance="outlined">
                 <div class="rounded-4 card-image">
-                    <img class="img-fluid w-100 h-100" mat-card-lg-image [src]="item.profile_pic ? item.profile_pic : '/assets/sampleImages/placeholder-profile-sq.jpg'">
+                    <img class="img-fluid w-100 h-100" mat-card-lg-image
+                        [src]="item.profile_pic ? item.profile_pic : '/assets/sampleImages/placeholder-profile-sq.jpg'">
                 </div>
                 <div class="p-1 ps-2">
-                    <p class="fs-6 fw-bold my-2 mt-1 p-0">{{item.name | slice:0:15}}{{item.name.length > 45 ? "...." : ""}}</p>
+                    <p class="fs-6 fw-bold my-2 mt-1 p-0">{{item.name | slice:0:15}}{{item.name.length > 45 ? "...." :
+                        ""}}</p>
                     <p class="fs-6 my-1"><small class="fw-medium ">Ass. Year - {{item.ass_year}} </small></p>
                     <div class="py-2">
-                        <p style="word-break: break-word;">{{getSAddress(item) | slice:0:45}}{{getSAddress(item).length > 45 ?
+                        <p style="word-break: break-word;">{{item.address| slice:0:45}}{{item.address.length > 45 ?
                             "...." : ""}}</p>
-                    <p class="m-0"><small>Pin Code: {{item.pin}} </small></p>
+                        <p class="m-0"><small>Pin Code: {{item.pin}} </small></p>
                     </div>
                     <!-- <p class="fs-6 fw-medium m-0">{{item.mobile_no}}</p> -->
                 </div>
                 <button (click)="userUpdate($event, item)"
-                    class="position-absolute edit-user bg-transparent border-0 d-flex justify-content-center align-items-center rounded-circle"><i class="fa-solid fa-pen-to-square fs-4 primary-font"></i></button>
+                    class="position-absolute edit-user bg-transparent border-0 d-flex justify-content-center align-items-center rounded-circle"><i
+                        class="fa-solid fa-pen-to-square fs-4 primary-font"></i></button>
             </mat-card>
             }
         </div>
         }
-        
+
     </div>
-    <mat-paginator #paginator class="paginator p-1 text-white w-100 {{chartedAccountant.length < 3 ? 'fixed' : ''}}" [length]="totalItemsCount" [pageSize]="10"  aria-label="Select page" (page)="onPageChange($event)"></mat-paginator>
+    <mat-paginator #paginator class="paginator p-1 text-white w-100 {{chartedAccountant.length < 3 ? 'fixed' : ''}}"
+        [length]="totalItemsCount" [pageSize]="10" aria-label="Select page"
+        (page)="onPageChange($event)"></mat-paginator>
 </div>

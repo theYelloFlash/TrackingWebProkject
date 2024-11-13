@@ -5,15 +5,17 @@
             <div class="col-md-12 col-xl-8">
                 <div class="card overflow-hidden" style="border-radius: 15px;">
                     <button class="position-absolute back-button bg-transparent border-0" (click)="goBack()"><i
-                        class="fa-solid fa-arrow-left text-white fw-bold fs-4"></i></button>
+                            class="fa-solid fa-arrow-left text-white fw-bold fs-4"></i></button>
                     <div class="w-100 header"></div>
                     @if (userData) {
-                        <div
+                    <div
                         class="card-body positioned-div text-center d-flex flex-column justify-content-center align-items-center">
                         <div class="mt-3 mb-4 dim rounded-circle profile-border bg-white primary-shadow">
-                            <img [src]="userData.profile_pic ? userData.profile_pic : 'assets/sampleImages/placeholder-profile-sq.jpg'" class="img-fluid" />
+                            <img [src]="userData.profile_pic ? userData.profile_pic : 'assets/sampleImages/placeholder-profile-sq.jpg'"
+                                class="img-fluid" />
                         </div>
-                        <h4 class="mb-2 fw-bold fs-3 primary-font"> {{userData.name | slice:0:25}}{{userData.name.length > 25 ? "...." : ""}}</h4>
+                        <h4 class="mb-2 fw-bold fs-3 primary-font"> {{userData.name | slice:0:25}}{{userData.name.length
+                            > 25 ? "...." : ""}}</h4>
                         <div class="row py-3 w-100" style="max-width: 300px;">
                             <div class="col-4 p-0">
                                 <button type="button" data-mdb-button-init data-mdb-ripple-init (click)="callPerson()"
@@ -23,7 +25,8 @@
                                 <p class="mt-2">Call</p>
                             </div>
                             <div class="col-4 p-0">
-                                <button type="button" data-mdb-button-init data-mdb-ripple-init (click)="openUpdateForm($event)"
+                                <button type="button" data-mdb-button-init data-mdb-ripple-init
+                                    (click)="openUpdateForm($event)"
                                     class="btn btn-outline-secondary btn-floating rounded-circle">
                                     <i class="bi bi-pencil-fill primary-font"></i>
                                 </button>
@@ -86,7 +89,7 @@
                                             <h5 class="mb-0 fs-4 primary-font"><strong>Address Details</strong></h5>
                                         </div>
                                         <div class="text-start">
-                                            <p class="fs-6">{{getSAddress()}}</p>
+                                            <p class="fs-6">{{userData.address}}</p>
                                         </div>
                                         <div class="text-start fs-6">
                                             <div class="fs-6 d-flex">
@@ -119,7 +122,8 @@
                                         <div class="text-start fs-6">
                                             <div class="fs-6 d-flex">
                                                 <p class="primary-font fw-medium m-0 mb-1 w-50">Company:</p>
-                                                <p class="w-50">{{userData.company_name ? userData.company_name : "-"}}</p>
+                                                <p class="w-50">{{userData.company_name ? userData.company_name : "-"}}
+                                                </p>
                                             </div>
                                             <div class="fs-6 d-flex">
                                                 <p class="primary-font fw-medium m-0 mb-1 w-50">Designation:</p>
@@ -133,40 +137,41 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                    @if (userData &&  userData.feedbacks.length > 0) {
-                                        <div>
-                                            <div class="py-4 text-start">
-                                                <h5 class="mb-0 fs-4 primary-font"><strong>Additional Details</strong></h5>
+                                    @if (userData && userData.feedbacks.length > 0) {
+                                    <div>
+                                        <div class="py-4 text-start">
+                                            <h5 class="mb-0 fs-4 primary-font"><strong>Additional Details</strong></h5>
+                                        </div>
+                                        <div class="text-start fs-6">
+                                            <div class="fs-6">
+                                                <p class="primary-font fw-medium m-0 mb-1">Remark 1 : </p>
+                                                <p> {{userData.feedbacks[0].remark1 ? userData.feedbacks[0].remark1 :
+                                                    "-"}} </p>
                                             </div>
-                                            <div class="text-start fs-6">
-                                                <div class="fs-6">
-                                                    <p class="primary-font fw-medium m-0 mb-1">Remark 1 : </p>
-                                                    <p> {{userData.feedbacks[0].remark1 ? userData.feedbacks[0].remark1 : "-"}} </p>
+                                            <div class="fs-6">
+                                                <p class="primary-font fw-medium m-0 mb-1">Remark 2:</p>
+                                                <p>
+                                                    {{userData.feedbacks[0].remark2 ? userData.feedbacks[0].remark2 :
+                                                    "-"}}
+                                                </p>
+                                            </div>
+                                            <div class="fs-6">
+                                                <p class="primary-font fw-medium m-0 mb-1">Ratings:</p>
+                                                <!-- <p> {{userData.feedbacks[0].rating ? userData.feedbacks[0].rating : "-"}}</p> -->
+                                                <div class="star-rating mb-2 mt-2">
+                                                    <span *ngFor="let star of [1, 2, 3, 4, 5]; let i = index"
+                                                        class="star" [ngClass]="{'filled': i < ratings}">
+                                                        &#9733;
+                                                    </span>
                                                 </div>
-                                                <div class="fs-6">
-                                                    <p class="primary-font fw-medium m-0 mb-1">Remark 2:</p>
-                                                    <p>
-                                                        {{userData.feedbacks[0].remark2 ? userData.feedbacks[0].remark2 : "-"}}
-                                                    </p>
-                                                </div>
-                                                <div class="fs-6">
-                                                    <p class="primary-font fw-medium m-0 mb-1">Ratings:</p>
-                                                    <!-- <p> {{userData.feedbacks[0].rating ? userData.feedbacks[0].rating : "-"}}</p> -->
-                                                    <div class="star-rating mb-2 mt-2">
-                                                        <span
-                                                          *ngFor="let star of [1, 2, 3, 4, 5]; let i = index"
-                                                          class="star"
-                                                          [ngClass]="{'filled': i < ratings}">
-                                                          &#9733;
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="fs-6">
-                                                    <p class="primary-font fw-medium m-0 mb-1">Reference:</p>
-                                                    <p> {{userData.feedbacks[0].reference_by ? userData.feedbacks[0].reference_by : "-"}}</p>
-                                                </div>
+                                            </div>
+                                            <div class="fs-6">
+                                                <p class="primary-font fw-medium m-0 mb-1">Reference:</p>
+                                                <p> {{userData.feedbacks[0].reference_by ?
+                                                    userData.feedbacks[0].reference_by : "-"}}</p>
                                             </div>
                                         </div>
+                                    </div>
                                     }
                                 </div>
                             </div>

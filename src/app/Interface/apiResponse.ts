@@ -17,6 +17,7 @@ export interface CharteredAccountant {
   name: string;
   sex: string;
   mem_no: string;
+  address: string
   address_1: string;
   address_2: string;
   address_3: string;
@@ -36,7 +37,6 @@ export interface CharteredAccountant {
   email: string;
   profile_pic: string | null;
   feedbacks: Feedback[];
-  full_address: string;
   job_type: string;
   company_name: string;
   designation: string;
