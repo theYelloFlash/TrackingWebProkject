@@ -14,18 +14,22 @@ bootstrapApplication(AppComponent, {
     ...appConfig.providers,
     provideAnimations(), // required animations providers
     provideToastr({
-      timeOut: 3000, // Set global toastr configuration
-      positionClass: 'toast-top-right',
-      preventDuplicates: true,
+        timeOut: 3000, // Set global toastr configuration
+        positionClass: 'toast-top-right',
+        preventDuplicates: true,
     }),
     provideServiceWorker('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000',
+        enabled: !isDevMode(),
+        registrationStrategy: 'registerWhenStable:30000',
     }),
     provideServiceWorker('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000',
+        enabled: !isDevMode(),
+        registrationStrategy: 'registerWhenStable:30000',
     }),
     { provide: BrowserAnimationsModule, useClass: BrowserAnimationsModule },
-  ],
+    provideServiceWorker('ngsw-worker.js', {
+        enabled: !isDevMode(),
+        registrationStrategy: 'registerWhenStable:30000'
+    })
+],
 }).catch((err) => console.error(err));

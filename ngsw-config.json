@@ -7,7 +7,7 @@
       "installMode": "prefetch",
       "resources": {
         "files": [
-          "/img.jpeg",
+          "/favicon.ico",
           "/index.html",
           "/manifest.webmanifest",
           "/*.css",
@@ -24,6 +24,23 @@
           "/assets/**",
           "/media/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
         ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-calls",
+      "urls": [
+        "/users",
+        "/user-profile/*",
+        "/user-form/*",
+        "/login"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "1h",
+        "timeout": "10s"
       }
     }
   ]

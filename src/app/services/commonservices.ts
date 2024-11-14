@@ -65,8 +65,8 @@ export class CommonService {
     country?: string,
     pincode?: string
   ): Observable<ApiPaginatedResponse<CharteredAccountant>> {
-    return this.http.get<ApiPaginatedResponse<CharteredAccountant>>(
-      `${this.environment}chartered-accountants?search_query=${searchString}&page=${currentPage}&city=${city}&state=${state}&country=${country}&pin=${pincode}`,
+    console.log('api hit')
+    return this.http.get<ApiPaginatedResponse<CharteredAccountant>>(`${this.environment}chartered-accountants?search_query=${searchString}&page=${currentPage}&city=${city}&state=${state}&country=${country}&pin=${pincode}`,
       { headers: this.headers }
     );
   }

@@ -26,3 +26,19 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+.scrollable-div{
+  max-height: 443px;
+  overflow-y: scroll;
+  -webkit-mask-image: -webkit-gradient(
+        linear,
+        left 90%,
+        left bottom,
+        from(rgba(0, 0, 0, 1)),
+        to(rgba(0, 0, 0, 0))
+    );
+}
+/* .scrollable-div::-webkit-scrollbar{
+  width: 0;
+  height: 0;
+} */
+.w-90{width: 95%;}

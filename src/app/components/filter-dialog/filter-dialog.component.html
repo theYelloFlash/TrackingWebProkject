@@ -1,110 +1,112 @@
 <div class="p-3">
     <h2 class="py-2 px-1">Filter</h2>
-    <form class="row" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="col-6">
-            <input type="text" placeholder="Country" aria-label="Country" matInput [formControl]="countryControl"
-                [matAutocomplete]="country" [attr.autofocus]="'false'" />
-            <mat-autocomplete #country="matAutocomplete" (optionSelected)="selectCountry($event)">
-                <mat-option *ngFor="let item of filteredCountries | async" [value]="item.name">
-                    {{ item.name }}
-                </mat-option>
-            </mat-autocomplete>
-            <button mat-icon-button matSuffix *ngIf="countryControl.value" aria-label="Clear"
-                class="border-0 bg-transparent pe-3" (click)="clearValue(countryControl)">
-                <i class="bi bi-x fs-4"></i>
-            </button>
-        </mat-form-field>
+    <form class="d-flex flex-column gap-3" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
+        <div class="scrollable-div px-2">
+            <mat-form-field appearance="outline" class="w-100">
+                <input type="text" placeholder="Country" aria-label="Country" matInput [formControl]="countryControl"
+                    [matAutocomplete]="country" [attr.autofocus]="'false'" />
+                <mat-autocomplete #country="matAutocomplete" (optionSelected)="selectCountry($event)">
+                    <mat-option *ngFor="let item of filteredCountries | async" [value]="item.name">
+                        {{ item.name }}
+                    </mat-option>
+                </mat-autocomplete>
+                <button mat-icon-button matSuffix *ngIf="countryControl.value" aria-label="Clear"
+                    class="border-0 bg-transparent pe-3" (click)="clearValue(countryControl)">
+                    <i class="bi bi-x fs-4"></i>
+                </button>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="col-6">
-            <input [formControl]="stateFormCtrl" type="text" placeholder="State" aria-label="States" matInput
-                [matAutocomplete]="state">
-            <mat-autocomplete #state="matAutocomplete" (optionSelected)="selectState($event)">
+            <mat-form-field appearance="outline" class="w-100">
+                <input [formControl]="stateFormCtrl" type="text" placeholder="State" aria-label="States" matInput
+                    [matAutocomplete]="state">
+                <mat-autocomplete #state="matAutocomplete" (optionSelected)="selectState($event)">
 
-                <mat-option *ngFor="let item of filteredStates | async" [value]="item.name">
-                    {{ item.name }}
-                </mat-option>
-            </mat-autocomplete>
-            <button mat-icon-button matSuffix *ngIf="stateFormCtrl.value" aria-label="Clear"
-                class="border-0 bg-transparent pe-3" (click)="clearValue(stateFormCtrl)">
-                <i class="bi bi-x fs-4"></i>
-            </button>
-        </mat-form-field>
-
-
-        <mat-form-field appearance="outline" class="col-6">
-            <input [formControl]="cityCtrl" type="text" placeholder="City" aria-label="City" matInput
-                [matAutocomplete]="city" (focus)="onFocusCity()">
-            <mat-autocomplete #city="matAutocomplete" (optionSelected)="clearOnCity()">
-                <mat-option *ngFor="let item of filteredCities | async" [value]="item.name">
-                    {{ item.name }}
-                </mat-option>
-            </mat-autocomplete>
-            <button mat-icon-button matSuffix *ngIf="cityCtrl.value" aria-label="Clear"
-                class="border-0 bg-transparent pe-3" (click)="clearValue(cityCtrl)">
-                <i class="bi bi-x fs-4"></i>
-            </button>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="col-6">
-            <input matInput type="text" [matAutocomplete]="pin_auto" [formControl]="pin" placeholder="Enter pincode"
-                maxlength="10" minlength="4">
-            <mat-autocomplete #pin_auto="matAutocomplete" (optionSelected)="clearOnPin()">
-                <mat-option *ngFor="let item of filteredPinList" [value]="item.name">
-                    {{ item.name }}
-                </mat-option>
-            </mat-autocomplete>
-            <mat-error
-                *ngIf="filterForm.get('pincode')?.hasError('maxlength') || filterForm.get('pincode')?.hasError('minlength') || filterForm.get('pincode')?.hasError('pattern')">
-                Invalid Pincode
-            </mat-error>
-            <button mat-icon-button matSuffix *ngIf="pin.value" aria-label="Clear" class="border-0 bg-transparent pe-3"
-                (click)="clearValue(pin)">
-                <i class="bi bi-x fs-4"></i>
-            </button>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="col-6">
-            <input type="text" placeholder="Name" aria-label="Name" matInput [formControl]="nameCtrl"
-                [matAutocomplete]="name" [attr.autofocus]="'false'" />
-            <mat-autocomplete #name="matAutocomplete" (optionSelected)="clearOnName()">
-                <mat-option *ngFor="let item of filteredNameList" [value]="item.name">
-                    {{ item.name }}
-                </mat-option>
-            </mat-autocomplete>
-            <button mat-icon-button matSuffix *ngIf="nameCtrl.value" aria-label="Clear"
-                class="border-0 bg-transparent pe-3" (click)="clearValue(nameCtrl)">
-                <i class="bi bi-x fs-4"></i>
-            </button>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="col-6">
-            <input [formControl]="memNoCtrl" type="text" placeholder="Membership No" aria-label="Member_No" matInput
-                [matAutocomplete]="mem_no">
-            <mat-autocomplete #mem_no="matAutocomplete" (optionSelected)="selectMem_no()">
-                <mat-option *ngFor="let item of filteredMem_No" [value]="item.id">
-                    {{ item.id }}
-                </mat-option>
-            </mat-autocomplete>
-            <button mat-icon-button matSuffix *ngIf="memNoCtrl.value" aria-label="Clear"
-                class="border-0 bg-transparent pe-3" (click)="clearValue(memNoCtrl)">
-                <i class="bi bi-x fs-4"></i>
-            </button>
-        </mat-form-field>
+                    <mat-option *ngFor="let item of filteredStates | async" [value]="item.name">
+                        {{ item.name }}
+                    </mat-option>
+                </mat-autocomplete>
+                <button mat-icon-button matSuffix *ngIf="stateFormCtrl.value" aria-label="Clear"
+                    class="border-0 bg-transparent pe-3" (click)="clearValue(stateFormCtrl)">
+                    <i class="bi bi-x fs-4"></i>
+                </button>
+            </mat-form-field>
 
 
-        <mat-form-field appearance="outline" class="col-6">
-            <input [formControl]="mobile_no" type="text" placeholder="Mobile NO" aria-label="Mobile No" matInput
-                [matAutocomplete]="mobile">
-            <mat-autocomplete #mobile="matAutocomplete">
-                <mat-option *ngFor="let item of filteredMobile_no" [value]="item.name">
-                    {{ item.name }}
-                </mat-option>
-            </mat-autocomplete>
-            <button mat-icon-button matSuffix *ngIf="mobile_no.value" aria-label="Clear"
-                class="border-0 bg-transparent pe-3" (click)="clearValue(mobile_no)">
-                <i class="bi bi-x fs-4"></i>
-            </button>
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="w-100">
+                <input [formControl]="cityCtrl" type="text" placeholder="City" aria-label="City" matInput
+                    [matAutocomplete]="city" (focus)="onFocusCity()">
+                <mat-autocomplete #city="matAutocomplete" (optionSelected)="clearOnCity()">
+                    <mat-option *ngFor="let item of filteredCities | async" [value]="item.name">
+                        {{ item.name }}
+                    </mat-option>
+                </mat-autocomplete>
+                <button mat-icon-button matSuffix *ngIf="cityCtrl.value" aria-label="Clear"
+                    class="border-0 bg-transparent pe-3" (click)="clearValue(cityCtrl)">
+                    <i class="bi bi-x fs-4"></i>
+                </button>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100">
+                <input matInput type="text" [matAutocomplete]="pin_auto" [formControl]="pin" placeholder="Enter pincode"
+                    maxlength="10" minlength="4">
+                <mat-autocomplete #pin_auto="matAutocomplete" (optionSelected)="clearOnPin()">
+                    <mat-option *ngFor="let item of filteredPinList" [value]="item.name">
+                        {{ item.name }}
+                    </mat-option>
+                </mat-autocomplete>
+                <mat-error
+                    *ngIf="filterForm.get('pincode')?.hasError('maxlength') || filterForm.get('pincode')?.hasError('minlength') || filterForm.get('pincode')?.hasError('pattern')">
+                    Invalid Pincode
+                </mat-error>
+                <button mat-icon-button matSuffix *ngIf="pin.value" aria-label="Clear"
+                    class="border-0 bg-transparent pe-3" (click)="clearValue(pin)">
+                    <i class="bi bi-x fs-4"></i>
+                </button>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100">
+                <input type="text" placeholder="Name" aria-label="Name" matInput [formControl]="nameCtrl"
+                    [matAutocomplete]="name" [attr.autofocus]="'false'" />
+                <mat-autocomplete #name="matAutocomplete" (optionSelected)="clearOnName()">
+                    <mat-option *ngFor="let item of filteredNameList" [value]="item.name">
+                        {{ item.name }}
+                    </mat-option>
+                </mat-autocomplete>
+                <button mat-icon-button matSuffix *ngIf="nameCtrl.value" aria-label="Clear"
+                    class="border-0 bg-transparent pe-3" (click)="clearValue(nameCtrl)">
+                    <i class="bi bi-x fs-4"></i>
+                </button>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100">
+                <input [formControl]="memNoCtrl" type="text" placeholder="Membership No" aria-label="Member_No" matInput
+                    [matAutocomplete]="mem_no">
+                <mat-autocomplete #mem_no="matAutocomplete" (optionSelected)="selectMem_no()">
+                    <mat-option *ngFor="let item of filteredMem_No" [value]="item.id">
+                        {{ item.id }}
+                    </mat-option>
+                </mat-autocomplete>
+                <button mat-icon-button matSuffix *ngIf="memNoCtrl.value" aria-label="Clear"
+                    class="border-0 bg-transparent pe-3" (click)="clearValue(memNoCtrl)">
+                    <i class="bi bi-x fs-4"></i>
+                </button>
+            </mat-form-field>
+
+
+            <mat-form-field appearance="outline" class="w-100">
+                <input [formControl]="mobile_no" type="text" placeholder="Mobile No" aria-label="Mobile No" matInput
+                    [matAutocomplete]="mobile">
+                <mat-autocomplete #mobile="matAutocomplete">
+                    <mat-option *ngFor="let item of filteredMobile_no" [value]="item.name">
+                        {{ item.name }}
+                    </mat-option>
+                </mat-autocomplete>
+                <button mat-icon-button matSuffix *ngIf="mobile_no.value" aria-label="Clear"
+                    class="border-0 bg-transparent pe-3" (click)="clearValue(mobile_no)">
+                    <i class="bi bi-x fs-4"></i>
+                </button>
+            </mat-form-field>
+        </div>
 
         <div class="d-flex w-100 justify-content-between">
             <div></div>

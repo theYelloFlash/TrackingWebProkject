@@ -14,16 +14,17 @@ import { FilterDialogComponent } from '../filter-dialog/filter-dialog.component'
 export class FilterComponent {
   searchTerm: string = '';
 
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog) { }
 
-  onFilter() {}
+  onFilter() { }
 
-  onAddNew() {}
+  onAddNew() { }
 
   openDialog() {
     this.dialog.open(FilterDialogComponent, {
       autoFocus: false,
       maxWidth: '400px',
+      height: '600px',
       width: '90%',
     });
   }

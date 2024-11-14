@@ -23,7 +23,6 @@
             "assets": [
               "src/img.jpeg",
               "src/assets",
-              "src/manifest.webmanifest",
               "src/manifest.webmanifest"
             ],
             "styles": [
@@ -94,7 +93,6 @@
             "assets": [
               "src/img.jpeg",
               "src/assets",
-              "src/manifest.webmanifest",
               "src/manifest.webmanifest"
             ],
             "styles": [

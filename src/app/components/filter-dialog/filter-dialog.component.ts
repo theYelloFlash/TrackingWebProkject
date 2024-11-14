@@ -229,9 +229,14 @@ export class FilterDialogComponent {
     formCtrl.setValue('');
     if (formCtrl == this.countryControl) {
       this.clearOnCountry();
+      this.stateSubject.next([])
+      this.cities = [];
+      this.citySubject.next([]);
     }
     if (formCtrl == this.stateFormCtrl) {
       this.clearOnState();
+      this.cities = [];
+      this.citySubject.next([]);
     }
     if (formCtrl == this.cityCtrl) {
       this.clearOnCity()
